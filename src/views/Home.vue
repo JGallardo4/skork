@@ -57,7 +57,6 @@ export default {
   display: grid;
   grid-template-columns: 1fr;
   grid-template-rows: 1fr auto;
-  height: 100vh;
 }
 .main-buttons {
   grid-row: 2;
