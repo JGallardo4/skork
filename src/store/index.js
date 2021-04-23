@@ -10,6 +10,14 @@ export default createStore({
     },
   },
 
+  getters: {
+    getItemByBarcode: (state) => (barcode) => {
+      return state.inventoryItems.find(
+        (item) => item.Barcode !== "" && item.Barcode === barcode
+      );
+    },
+  },
+
   actions: {
     async refreshData({ commit }) {
       const doc = new GoogleSpreadsheet(

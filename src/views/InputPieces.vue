@@ -1,6 +1,6 @@
 <template>
   <main class="main">
-    <inventory-grid :inventoryItems="inventoryItems"></inventory-grid>
+    <section class="main-section"></section>
 
     <section class="main-buttons">
       <router-link class="main-button" to="/input-overstock" tag="button"
@@ -14,14 +14,8 @@
 </template>
 
 <script>
-import InventoryGrid from "../components/InventoryGrid.vue";
-
 export default {
-  name: "Home",
-
-  components: {
-    InventoryGrid,
-  },
+  name: "InputPieces",
 
   data() {
     return {
