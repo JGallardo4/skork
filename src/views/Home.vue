@@ -1,8 +1,9 @@
 <template>
   <main class="main">
-    <!-- <div v-for="item in items" :key="item.id" id="demo">
+    <section></section>
+    <div v-for="item in inventoryItems" :key="item.id" id="demo">
       {{ item.Location }}
-    </div> -->
+    </div>
 
     <section class="main-buttons">
       <button class="main-button" onclick="myFunction()">
@@ -15,42 +16,23 @@
 </template>
 
 <script>
-// @ is an alias to /src
-import { GoogleSpreadsheet } from "google-spreadsheet";
-
 export default {
   name: "Home",
 
   data() {
     return {
-      items: [],
       isLoading: true,
     };
   },
 
-  methods: {
-    async getData() {
-      const doc = new GoogleSpreadsheet(
-        "1dp5vKTq9V5DfhpDsCq1XWpmuVDz7oiuTVy-rOO23I7w"
-      );
-
-      await doc.useServiceAccountAuth({
-        client_email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
-        private_key: process.env.GOOGLE_PRIVATE_KEY,
-      });
-
-      await doc.loadInfo();
-
-      console.log(doc.title);
-
-      const sheet = doc.sheetsByTitle["InventoryData"];
-
-      console.log(await sheet.getRows());
+  computed: {
+    inventoryItems() {
+      return this.$store.state.inventoryItems;
     },
   },
 
   created() {
-    this.getData();
+    this.$store.dispatch("refreshData");
   },
 };
 </script>
