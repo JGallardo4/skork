@@ -1,5 +1,7 @@
 <template>
-  <semipolar-spinner :animation-duration="2000" :size="65" color="#ff1d5e" />
+  <div class="spinner-container">
+    <semipolar-spinner :animation-duration="2000" :size="65" color="#ff1d5e" />
+  </div>
 </template>
 
 <script>
@@ -14,4 +16,9 @@ export default {
 };
 </script>
 
-<style></style>
+<style sass scoped>
+.spinner-container {
+  display: grid;
+  place-items: center;
+}
+</style>

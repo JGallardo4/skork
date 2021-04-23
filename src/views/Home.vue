@@ -1,6 +1,6 @@
 <template>
   <main class="main">
-    <spinner></spinner>
+    <spinner class="spinner" v-if="isLoading"></spinner>
 
     <inventory-grid :inventoryItems="inventoryItems"></inventory-grid>
 
@@ -16,21 +16,28 @@
 </template>
 
 <script>
-import InventoryGrid from "../components/InventoryGrid.vue";
+// import { defineAsyncComponent } from "vue";
 import Spinner from "../components/Spinner.vue";
+import InventoryGrid from "../components/InventoryGrid";
 
 export default {
   name: "Home",
-
-  components: {
-    InventoryGrid,
-    Spinner,
-  },
 
   data() {
     return {
       isLoading: true,
     };
+  },
+
+  components: {
+    // InventoryGrid: defineAsyncComponent({
+    //   loader: () => import("../components/InventoryGrid.vue"),
+    //   timeout: 3000,
+    //   errorComponent: "Error loading",
+    //   loadingComponent: Spinner,
+    // }),
+    InventoryGrid,
+    Spinner,
   },
 
   computed: {
@@ -40,23 +47,24 @@ export default {
   },
 
   created() {
-    this.$store.dispatch("refreshData");
+    this.$store.dispatch("refreshData").then(() => (this.isLoading = false));
   },
 };
 </script>
 
-<style lang="sass" scoped>
-.main
-  display: grid
-  grid-template-columns: 1fr
-  grid-template-rows: 1fr auto
-  height: 100vh
-
-  &-buttons
-    grid-row: 2
-    display: flex
-    flex-direction: column
-
-  &-button
-    padding: 2rem
+<style sass scoped>
+.main {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr auto;
+  height: 100vh;
+}
+.main-buttons {
+  grid-row: 2;
+  display: flex;
+  flex-direction: column;
+}
+.main-button {
+  padding: 2rem;
+}
 </style>
