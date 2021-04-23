@@ -1,5 +1,7 @@
 <template>
   <main class="main">
+    <spinner></spinner>
+
     <inventory-grid :inventoryItems="inventoryItems"></inventory-grid>
 
     <section class="main-buttons">
@@ -15,12 +17,14 @@
 
 <script>
 import InventoryGrid from "../components/InventoryGrid.vue";
+import Spinner from "../components/Spinner.vue";
 
 export default {
   name: "Home",
 
   components: {
     InventoryGrid,
+    Spinner,
   },
 
   data() {

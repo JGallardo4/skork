@@ -1,36 +1,55 @@
 <template>
-  <main class="main">
-    <section class="main-section"></section>
+  <form class="form" @submit.prevent="track(carrier)">
+    <div class="form-field">
+      <label for="barcode">Barcode</label>
+      <input id="barcode" v-model="barcode" />
+    </div>
+    <button
+      class="submit-button"
+      type="submit"
+      value="submit"
+      @click="submit()"
+    >
+      Done
+    </button>
+  </form>
 
-    <section class="main-buttons">
-      <router-link class="main-button" to="/input-overstock" tag="button"
-        >Input overstock</router-link
-      >
-      <router-link class="main-button" to="/input-pieces" tag="button"
-        >Input pieces</router-link
-      >
-    </section>
-  </main>
+  <inventory-item
+    v-if="selectedItem"
+    class="inventory-item"
+    :item="selectedItem"
+  ></inventory-item>
 </template>
 
 <script>
+import InventoryItem from "../components/InventoryItem.vue";
+
 export default {
   name: "InputPieces",
+
+  components: {
+    InventoryItem,
+  },
 
   data() {
     return {
       isLoading: true,
+      barcode: "",
     };
   },
 
   computed: {
-    inventoryItems() {
-      return this.$store.state.inventoryItems;
+    selectedItem() {
+      return this.$store.getters.getItemByBarcode(this.barcode);
     },
   },
 
   created() {
     this.$store.dispatch("refreshData");
+  },
+
+  methods: {
+    submit() {},
   },
 };
 </script>
