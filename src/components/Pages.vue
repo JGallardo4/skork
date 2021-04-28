@@ -1,5 +1,13 @@
 <template>
-  <inventory-grid :inventoryItems="displayedElements"></inventory-grid>
+  <!-- <inventory-grid :inventoryItems="displayedElements"></inventory-grid> -->
+
+  <div
+    v-for="{ element, index } in Object.values(displayedElements)"
+    :key="index"
+  >
+    HELLO {{ element }} {{ Object.values(displayedElements) }}
+    {{ typeof displayedElements }}
+  </div>
 
   <nav>
     <ul class="pagination">
@@ -8,7 +16,7 @@
           type="button"
           class="page-link"
           v-if="page != 1"
-          @click="page--"
+          @click="() => page--"
         >
           Previous
         </button>
@@ -18,18 +26,18 @@
         <button
           type="button"
           class="page-link"
-          v-for="{ pageNumber, index } in pages.slice(page - 1, page + 5)"
+          v-for="{ pageNumber, index } in availablePages"
           :key="index"
-          @click="page = pageNumber"
+          @click="displayPage(pageNumber)"
         >
-          {{ pageNumber }}
+          hello {{ pageNumber }} {{ index }}
         </button>
       </li>
 
       <li class="page-item">
         <button
           type="button"
-          @click="page++"
+          @click="() => page++"
           v-if="page < pages.length"
           class="page-link"
         >
@@ -41,22 +49,60 @@
 </template>
 
 <script>
-import InventoryGrid from "../components/InventoryGrid.vue";
+// import InventoryGrid from "../components/InventoryGrid.vue";
 
 export default {
   name: "Pages",
 
   components: {
-    InventoryGrid,
+    // InventoryGrid,
   },
 
-  props: ["elements"],
+  // props: ["elements"],
 
   data() {
     return {
       page: 1,
       perPage: 10,
       pages: [],
+      elements: [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+      ],
     };
   },
 
@@ -67,6 +113,10 @@ export default {
       for (let index = 1; index <= numberOfPages; index++) {
         this.pages.push(index);
       }
+    },
+
+    displayPage(newPage) {
+      this.page = newPage;
     },
 
     paginate(elements) {
@@ -81,6 +131,10 @@ export default {
   computed: {
     displayedElements() {
       return this.paginate(this.elements);
+    },
+
+    availablePages() {
+      return this.pages.slice(this.page - 1, this.page + 5);
     },
   },
 

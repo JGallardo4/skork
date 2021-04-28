@@ -1,0 +1,12 @@
+@use "reset.css";
+@use "_fonts.scss";
+@use "_variables" as *;
+
+body {
+  background-color: $base;
+  color: $text;
+}
+
+a {
+  text-decoration: none;
+}

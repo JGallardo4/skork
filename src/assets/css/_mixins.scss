@@ -1,0 +1,16 @@
+@use "variables" as *;
+
+@mixin button() {
+  background-color: $highlight2;
+  border: none;
+  color: $text;
+  display: grid;
+  place-items: center;
+  margin: 0.5rem;
+  border-radius: 5px;
+
+  &:hover {
+    background-color: $highlight3;
+    color: $background;
+  }
+}

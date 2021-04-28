@@ -1,5 +1,9 @@
 <template>
   <div class="input-pieces-container">
+    <header>
+      <router-link to="/" tag="button"> Back </router-link>
+    </header>
+
     <form class="form">
       <div class="form-field">
         <label for="barcode" class="field-label">
@@ -156,18 +160,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@use "../assets/css/_mixins.scss" as *;
+
 /* 628550153306 */
-.input-pieces-container {
-  background-color: black;
-  color: white;
-}
 
 .form-field {
   padding: 0.5rem;
   display: flex;
   justify-content: space-between;
   gap: 1rem;
-  background-color: #1d1d1d;
 
   .field-input {
     width: 100%;
@@ -179,5 +180,9 @@ export default {
 .selected-item {
   padding: 0.5rem;
   background-color: #1d1d1d;
+}
+
+.submit-button {
+  @include button();
 }
 </style>
