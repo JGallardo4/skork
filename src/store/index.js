@@ -36,7 +36,7 @@ export default createStore({
 
       const sheet = doc.sheetsByTitle["Inventory"];
 
-      var inventoryItems = await sheet.getRows();
+      var inventoryItems = await Object.freeze(sheet.getRows());
 
       commit("SET_INVENTORY", inventoryItems);
     },

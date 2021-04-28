@@ -5,7 +5,6 @@
       v-for="(item, id) in inventoryItems"
       :key="id"
       :item="item"
-      id="demo"
     >
     </inventory-item>
   </section>
@@ -13,6 +12,7 @@
 
 <script>
 import InventoryItem from "./InventoryItem.vue";
+
 export default {
   components: { InventoryItem },
   name: "InventoryGrid",

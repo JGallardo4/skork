@@ -21,7 +21,7 @@
       <h1>Pieces: {{ item.Pieces }}</h1>
       <h1>Pieces per box: {{ item["Pieces per box"] }}</h1>
       <h1>SKU: {{ item.SKU }}</h1>
-      <h1>Total: {{ total }}</h1>
+      <h1>Total: {{ item.Total }}</h1>
     </template>
   </article>
 </template>

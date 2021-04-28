@@ -2,7 +2,7 @@
   <main class="main">
     <spinner class="spinner" v-if="isLoading"></spinner>
 
-    <inventory-grid :inventoryItems="inventoryItems"></inventory-grid>
+    <pages :elements="inventoryItems"></pages>
 
     <section class="main-buttons">
       <router-link class="main-button" to="/input-overstock" tag="button"
@@ -16,9 +16,8 @@
 </template>
 
 <script>
-// import { defineAsyncComponent } from "vue";
 import Spinner from "../components/Spinner.vue";
-import InventoryGrid from "../components/InventoryGrid";
+import Pages from "../components/Pages.vue";
 
 export default {
   name: "Home",
@@ -30,13 +29,7 @@ export default {
   },
 
   components: {
-    // InventoryGrid: defineAsyncComponent({
-    //   loader: () => import("../components/InventoryGrid.vue"),
-    //   timeout: 3000,
-    //   errorComponent: "Error loading",
-    //   loadingComponent: Spinner,
-    // }),
-    InventoryGrid,
+    Pages,
     Spinner,
   },
 
@@ -52,18 +45,4 @@ export default {
 };
 </script>
 
-<style sass scoped>
-.main {
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-template-rows: 1fr auto;
-}
-.main-buttons {
-  grid-row: 2;
-  display: flex;
-  flex-direction: column;
-}
-.main-button {
-  padding: 2rem;
-}
-</style>
+<style sass scoped></style>
