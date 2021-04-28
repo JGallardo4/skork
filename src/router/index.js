@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import Home from "../views/Home.vue";
 import InputOverstock from "../views/InputOverstock.vue";
 import InputPieces from "../views/InputPieces.vue";
+import WorkerExample from "../views/WorkerExample.vue";
 
 const routes = [
   {
@@ -20,6 +21,12 @@ const routes = [
     path: "/input-pieces",
     name: "InputPieces",
     component: InputPieces,
+  },
+
+  {
+    path: "/worker",
+    name: "WorkerExample",
+    component: WorkerExample,
   },
 ];
 

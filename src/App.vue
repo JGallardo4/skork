@@ -2,6 +2,10 @@
   <router-view />
 </template>
 
-<style scoped>
-@import "./design/index.css";
-</style>
+<script>
+export default {
+  name: "App",
+};
+</script>
+
+<style scoped></style>
