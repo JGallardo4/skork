@@ -62,6 +62,7 @@ export default {
   .main-button {
     @include button();
     font-size: xx-large;
+    margin: 0.5rem;
   }
 
   .overstock {

@@ -12,8 +12,8 @@
       <h1>Total: {{ item.Total }}</h1>
     </template>
 
-    <template v-if="style !== 'INPUT_PIECES'"
-      ><h1>Barcode: {{ item.Barcode }}</h1>
+    <template v-if="style !== 'INPUT_PIECES'">
+      <h1>Barcode: {{ item.Barcode }}</h1>
       <h1>Brand: {{ item.Brand }}</h1>
       <h1>MG: {{ item.MG }}</h1>
       <h1>Name: {{ item.Name }}</h1>

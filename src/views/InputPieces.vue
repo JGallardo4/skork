@@ -1,17 +1,32 @@
 <template>
-  <div class="input-pieces-container">
-    <header>
-      <router-link to="/" tag="button"> Back </router-link>
-    </header>
-
-    <form class="form">
+  <div class="page-container">
+    <form class="barcode-form form">
       <div class="form-field">
         <label for="barcode" class="field-label">
           <i class="fas fa-barcode icon"></i>
         </label>
-        <input id="barcode" class="field-input" v-model="barcode" />
+        <input
+          id="barcode"
+          class="field-input"
+          v-model="barcode"
+          autofocus
+          ref="barcode"
+        />
       </div>
     </form>
+
+    <section class="buttons">
+      <router-link to="/" class="button" tag="button"> Back </router-link>
+
+      <button
+        class="button next-button"
+        type="submit"
+        value="submit"
+        @click="next()"
+      >
+        Next
+      </button>
+    </section>
 
     <inventory-item
       v-if="selectedItem"
@@ -20,43 +35,21 @@
       :style="'INPUT_PIECES'"
     ></inventory-item>
 
-    <form class="form" @submit.prevent="track(carrier)">
+    <form class="form pieces-form" v-if="selectedItem">
       <div class="form-field">
         <label for="pieces" class="field-label">
           <i class="fas fa-prescription-bottle icon"></i>
         </label>
-        <input id="pieces" class="field-input" v-model="pieces" />
+
+        <input
+          id="pieces"
+          class="field-input"
+          v-model="pieces"
+          ref="pieces"
+          type="number"
+        />
       </div>
     </form>
-
-    <section class="buttons">
-      <button
-        class="submit-button"
-        type="submit"
-        value="submit"
-        @click="submit()"
-      >
-        Back
-      </button>
-
-      <button
-        class="submit-button"
-        type="submit"
-        value="submit"
-        @click="submit()"
-      >
-        Input overstock
-      </button>
-
-      <button
-        class="submit-button"
-        type="submit"
-        value="submit"
-        @click="submit()"
-      >
-        Next
-      </button>
-    </section>
   </div>
 </template>
 
@@ -74,6 +67,7 @@ export default {
     return {
       isLoading: true,
       barcode: "",
+      pieces: 0,
     };
   },
 
@@ -89,14 +83,6 @@ export default {
           : this.selectedItem.Pieces;
       } else {
         return 0;
-      }
-    },
-
-    pieces() {
-      if (this.selectedItem) {
-        return this.selectedItem.Pieces === "" ? 0 : this.selectedItem.Pieces;
-      } else {
-        return "Scan to select an item";
       }
     },
 
@@ -143,8 +129,15 @@ export default {
     this.$store.dispatch("refreshData");
   },
 
+  mounted() {
+    this.$refs.barcode.focus();
+  },
+
   methods: {
-    submit() {},
+    next() {
+      this.$refs.barcode.focus();
+      this.barcode = "";
+    },
 
     parseNumber(x) {
       const parsed = parseInt(x, 10);
@@ -156,6 +149,14 @@ export default {
       return parsed;
     },
   },
+
+  watch: {
+    selectedItem: function (value) {
+      if (value != undefined) {
+        document.activeElement.blur();
+      }
+    },
+  },
 };
 </script>
 
@@ -164,11 +165,33 @@ export default {
 
 /* 628550153306 */
 
+.page-container {
+  height: 150vh;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto auto auto 1fr;
+  align-items: center;
+
+  .barcode-form {
+    height: min-content;
+    align-self: start !important;
+  }
+
+  .pieces-form {
+    align-self: start !important;
+  }
+
+  .form {
+    align-self: end;
+  }
+}
+
 .form-field {
   padding: 0.5rem;
   display: flex;
   justify-content: space-between;
-  gap: 1rem;
+  align-content: center;
+  gap: 0.3rem;
 
   .field-input {
     width: 100%;
@@ -177,12 +200,30 @@ export default {
   }
 }
 
-.selected-item {
-  padding: 0.5rem;
-  background-color: #1d1d1d;
+.button {
+  @include button();
+  font-size: large;
+  padding: 1rem;
 }
 
-.submit-button {
-  @include button();
+.counter-button {
+  padding: 0 1rem 0 1rem;
+}
+
+label {
+  display: grid;
+  place-items: center;
+}
+
+.buttons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0 1rem 0 1rem;
+}
+
+.next-button {
+  padding: 1.6rem;
+  font-size: xx-large;
 }
 </style>
