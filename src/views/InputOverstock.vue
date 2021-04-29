@@ -34,13 +34,11 @@
       :item="selectedItemData"
     ></inventory-item>
 
-    <div class="overstock-couner" v-if="overstockCount !== 0">
-      <p>
-        {{ overstockCount }}
-      </p>
+    <div class="overstock-count" v-if="selectedItem">
+      <p>Boxes: {{ overstockCount }}</p>
     </div>
 
-    <form class="form overstock-form" v-if="selectedItem">
+    <form class="form overstock-form" v-show="selectedItem">
       <div class="form-field">
         <label for="overstock" class="field-label">
           <i class="fas fa-box icon"></i>
@@ -73,7 +71,7 @@ export default {
       isLoading: true,
       barcode: "",
       overstockInput: "",
-      overstockCount: "0",
+      overstockCount: 0,
     };
   },
 
@@ -141,9 +139,9 @@ export default {
 
   methods: {
     next() {
-      this.$refs.barcode.focus();
-      this.overstockCount = 0;
       this.barcode = "";
+      this.overstockCount = 0;
+      this.$refs.barcode.focus();
     },
 
     parseNumber(x) {
@@ -159,8 +157,10 @@ export default {
 
   watch: {
     selectedItem: function (value) {
-      if (value != undefined) {
-        document.activeElement.blur();
+      if (value !== undefined) {
+        this.$nextTick(() => {
+          this.$refs.overstock.focus();
+        });
       }
     },
 
@@ -178,6 +178,7 @@ export default {
 
 <style lang="scss" scoped>
 @use "../assets/css/_mixins.scss" as *;
+@use "../assets/css/_variables.scss" as *;
 
 /* 628550153306 */
 
@@ -202,7 +203,10 @@ export default {
   }
 
   .overstock-count {
+    background-color: $highlight1;
     text-align: center;
+    padding: 1rem;
+    font-size: xx-large;
   }
 }
 

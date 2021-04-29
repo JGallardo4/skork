@@ -151,8 +151,10 @@ export default {
 
   watch: {
     selectedItem: function (value) {
-      if (value != undefined) {
-        document.activeElement.blur();
+      if (value !== undefined) {
+        this.$nextTick(() => {
+          this.$refs.pieces.focus();
+        });
       }
     },
   },
