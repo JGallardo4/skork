@@ -32,7 +32,6 @@
       v-if="selectedItem"
       class="selected-item"
       :item="selectedItemData"
-      :style="'INPUT_PIECES'"
     ></inventory-item>
 
     <form class="form pieces-form" v-if="selectedItem">
@@ -67,7 +66,7 @@ export default {
     return {
       isLoading: true,
       barcode: "",
-      pieces: 0,
+      pieces: "",
     };
   },
 
@@ -197,6 +196,11 @@ export default {
     width: 100%;
     border-radius: 5px;
     text-align: center;
+    font-size: 2rem;
+  }
+
+  .field-label {
+    font-size: 3rem;
   }
 }
 

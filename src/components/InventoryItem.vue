@@ -1,28 +1,16 @@
 <template>
-  <article :key="item.id">
-    <template v-if="style === 'INPUT_PIECES'">
-      <label class="inventory-item-label">
-        <h1>SKU: {{ item.SKU }}</h1>
-        <h1>{{ item.Brand + " " + item.Name + " " + item.MG }}</h1>
-      </label>
+  <article :key="item.id" class="inventory-item">
+    <label class="inventory-item-label">
+      <p>SKU {{ item.SKU }}</p>
+      <h1 class="inventory-item__title">
+        {{ item.Brand + " " + item.Name }}
+      </h1>
+    </label>
 
-      <h1>Overstock: {{ item.Overstock }}</h1>
-      <h1>Pieces: {{ item.Pieces }}</h1>
-      <h1>Pieces per box: {{ item["Pieces per Box"] }}</h1>
-      <h1>Total: {{ item.Total }}</h1>
-    </template>
-
-    <template v-if="style !== 'INPUT_PIECES'">
-      <h1>Barcode: {{ item.Barcode }}</h1>
-      <h1>Brand: {{ item.Brand }}</h1>
-      <h1>MG: {{ item.MG }}</h1>
-      <h1>Name: {{ item.Name }}</h1>
-      <h1>Overstock: {{ item.Overstock }}</h1>
-      <h1>Pieces: {{ item.Pieces }}</h1>
-      <h1>Pieces per box: {{ item["Pieces per box"] }}</h1>
-      <h1>SKU: {{ item.SKU }}</h1>
-      <h1>Total: {{ item.Total }}</h1>
-    </template>
+    <p>Overstock: {{ item.Overstock }}</p>
+    <p>Pieces: {{ item.Pieces }}</p>
+    <p>Pieces per box: {{ item["Pieces per Box"] }}</p>
+    <p>Total: {{ item.Total }}</p>
   </article>
 </template>
 
@@ -30,7 +18,7 @@
 export default {
   name: "InventoryItem",
 
-  props: ["item", "style"],
+  props: ["item"],
 };
 </script>
 
@@ -39,5 +27,18 @@ export default {
   display: flex;
   justify-content: center;
   gap: 1rem;
+}
+
+.inventory-item {
+  padding: 1rem;
+
+  .inventory-item__title {
+    padding-bottom: 1rem;
+  }
+
+  p,
+  h1 {
+    line-height: 1.25;
+  }
 }
 </style>

@@ -1,60 +1,60 @@
 <template>
-  <div class="input-pieces-container">
-    <form class="form">
+  <div class="page-container">
+    <form class="barcode-form form">
       <div class="form-field">
         <label for="barcode" class="field-label">
           <i class="fas fa-barcode icon"></i>
         </label>
-        <input id="barcode" class="field-input" v-model="barcode" />
-      </div>
-    </form>
-
-    <inventory-item
-      v-if="selectedItem"
-      class="selected-item"
-      :item="selectedItemData"
-      :style="'INPUT_PIECES'"
-    ></inventory-item>
-
-    <form class="form" @submit.prevent="track(carrier)">
-      <div class="form-field">
-        <label for="pieces" class="field-label">
-          <i class="fas fa-prescription-bottle icon"></i>
-        </label>
-
-        <input id="pieces" class="field-input" v-model="pieces" />
-
-        <button
-          class="button counter-button"
-          type="submit"
-          value="submit"
-          @click="pieces--"
-        >
-          -
-        </button>
-
-        <button
-          class="button counter-button"
-          type="submit"
-          value="submit"
-          @click="pieces++"
-        >
-          +
-        </button>
+        <input
+          id="barcode"
+          class="field-input"
+          v-model="barcode"
+          autofocus
+          ref="barcode"
+        />
       </div>
     </form>
 
     <section class="buttons">
       <router-link to="/" class="button" tag="button"> Back </router-link>
 
-      <button class="button" type="submit" value="submit" @click="submit()">
-        Input overstock
-      </button>
-
-      <button class="button" type="submit" value="submit" @click="submit()">
+      <button
+        class="button next-button"
+        type="submit"
+        value="submit"
+        @click="next()"
+      >
         Next
       </button>
     </section>
+
+    <inventory-item
+      v-if="selectedItem"
+      class="selected-item"
+      :item="selectedItemData"
+    ></inventory-item>
+
+    <div class="overstock-couner" v-if="overstockCount !== 0">
+      <p>
+        {{ overstockCount }}
+      </p>
+    </div>
+
+    <form class="form overstock-form" v-if="selectedItem">
+      <div class="form-field">
+        <label for="overstock" class="field-label">
+          <i class="fas fa-box icon"></i>
+        </label>
+
+        <input
+          id="overstock"
+          class="field-input"
+          ref="overstock"
+          v-model="overstockInput"
+          type="number"
+        />
+      </div>
+    </form>
   </div>
 </template>
 
@@ -62,7 +62,7 @@
 import InventoryItem from "../components/InventoryItem.vue";
 
 export default {
-  name: "InputPieces",
+  name: "InputOverstock",
 
   components: {
     InventoryItem,
@@ -72,7 +72,8 @@ export default {
     return {
       isLoading: true,
       barcode: "",
-      pieces: 0,
+      overstockInput: "",
+      overstockCount: "0",
     };
   },
 
@@ -103,7 +104,7 @@ export default {
       } else if (this.selectedItem["Pieces per box"] === "E") {
         return 56;
       } else {
-        return 0;
+        return "";
       }
     },
 
@@ -123,7 +124,7 @@ export default {
         Name: this.selectedItem.Name,
         MG: this.selectedItem.MG,
         Overstock: this.overstock,
-        Pieces: this.pieces,
+        Pieces: this.selectedItem.pieces,
         "Pieces per Box": this.boxCapacity,
         Total: this.total,
       };
@@ -134,8 +135,16 @@ export default {
     this.$store.dispatch("refreshData");
   },
 
+  mounted() {
+    this.$refs.barcode.focus();
+  },
+
   methods: {
-    submit() {},
+    next() {
+      this.$refs.barcode.focus();
+      this.overstockCount = 0;
+      this.barcode = "";
+    },
 
     parseNumber(x) {
       const parsed = parseInt(x, 10);
@@ -147,6 +156,23 @@ export default {
       return parsed;
     },
   },
+
+  watch: {
+    selectedItem: function (value) {
+      if (value != undefined) {
+        document.activeElement.blur();
+      }
+    },
+
+    overstockInput: function (value) {
+      if (this.barcode === value) {
+        this.overstockCount++;
+      }
+
+      this.overstockInput = "";
+      this.$refs.overstock.focus();
+    },
+  },
 };
 </script>
 
@@ -154,6 +180,31 @@ export default {
 @use "../assets/css/_mixins.scss" as *;
 
 /* 628550153306 */
+
+.page-container {
+  height: 150vh;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto auto auto auto 1fr;
+  align-items: center;
+
+  .barcode-form {
+    height: min-content;
+    align-self: start !important;
+  }
+
+  .overstock-form {
+    align-self: start !important;
+  }
+
+  .form {
+    align-self: end;
+  }
+
+  .overstock-count {
+    text-align: center;
+  }
+}
 
 .form-field {
   padding: 0.5rem;
@@ -166,12 +217,18 @@ export default {
     width: 100%;
     border-radius: 5px;
     text-align: center;
+    font-size: 2rem;
+  }
+
+  .field-label {
+    font-size: 3rem;
   }
 }
 
 .button {
   @include button();
   font-size: large;
+  padding: 1rem;
 }
 
 .counter-button {
@@ -181,5 +238,17 @@ export default {
 label {
   display: grid;
   place-items: center;
+}
+
+.buttons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0 1rem 0 1rem;
+}
+
+.next-button {
+  padding: 1.6rem;
+  font-size: xx-large;
 }
 </style>
