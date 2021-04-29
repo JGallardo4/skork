@@ -34,11 +34,22 @@
       :item="selectedItemData"
     ></inventory-item>
 
-    <div class="overstock-count" v-if="selectedItem">
+    <div class="overstock-count" v-show="selectedItem && boxCapacity !== '?'">
       <p>Boxes: {{ overstockCount }}</p>
     </div>
 
-    <form class="form overstock-form" v-show="selectedItem">
+    <div class="alert" v-show="selectedItem && boxCapacity === '?'">
+      <p>
+        This item does not have a set number of pieces per box. Please input
+        pieces directly.
+      </p>
+    </div>
+
+    <form
+      class="form overstock-form"
+      v-show="selectedItem && boxCapacity !== '?'"
+      v-on:submit.prevent="save()"
+    >
       <div class="form-field">
         <label for="overstock" class="field-label">
           <i class="fas fa-box icon"></i>
@@ -71,7 +82,7 @@ export default {
       isLoading: true,
       barcode: "",
       overstockInput: "",
-      overstockCount: 0,
+      overstockCount: 1,
     };
   },
 
@@ -84,33 +95,15 @@ export default {
       if (this.selectedItem) {
         return this.selectedItem.Overstock === ""
           ? 0
-          : this.selectedItem.Pieces;
+          : this.parseNumber(this.selectedItem.Overstock);
       } else {
         return 0;
       }
     },
 
     boxCapacity() {
-      if (this.selectedItem["Pieces per box"] === "A") {
-        return 250;
-      } else if (this.selectedItem["Pieces per box"] === "B") {
-        return 160;
-      } else if (this.selectedItem["Pieces per box"] === "C") {
-        return 80;
-      } else if (this.selectedItem["Pieces per box"] === "D") {
-        return 114;
-      } else if (this.selectedItem["Pieces per box"] === "E") {
-        return 56;
-      } else {
-        return "";
-      }
-    },
-
-    total() {
-      return (
-        this.parseNumber(this.selectedItem.Pieces) +
-        this.parseNumber(this.selectedItem.Overstock) *
-          this.parseNumber(this.boxCapacity)
+      return this.$store.getters.getBoxAmount(
+        this.selectedItem["Pieces per box"]
       );
     },
 
@@ -122,9 +115,9 @@ export default {
         Name: this.selectedItem.Name,
         MG: this.selectedItem.MG,
         Overstock: this.overstock,
-        Pieces: this.selectedItem.pieces,
+        Pieces: this.selectedItem.Pieces,
         "Pieces per Box": this.boxCapacity,
-        Total: this.total,
+        Total: this.selectedItem.Total,
       };
     },
   },
@@ -153,6 +146,17 @@ export default {
 
       return parsed;
     },
+
+    save() {
+      this.$store.dispatch("updateItem", {
+        sku: this.selectedItem.SKU,
+        overstock: this.parseNumber(this.overstockCount),
+        boxCapacity: this.parseNumber(this.boxCapacity),
+        pieces: this.parseNumber(this.selectedItem.Pieces),
+      });
+
+      this.next();
+    },
   },
 
   watch: {
@@ -180,8 +184,6 @@ export default {
 @use "../assets/css/_mixins.scss" as *;
 @use "../assets/css/_variables.scss" as *;
 
-/* 628550153306 */
-
 .page-container {
   height: 150vh;
   display: grid;
@@ -205,6 +207,14 @@ export default {
   .overstock-count {
     background-color: $highlight1;
     text-align: center;
+    padding: 1rem;
+    font-size: xx-large;
+  }
+
+  .alert {
+    color: black;
+    background-color: #fdfd96;
+    align-self: start;
     padding: 1rem;
     font-size: xx-large;
   }

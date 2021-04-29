@@ -2,11 +2,15 @@ import { createStore } from "vuex";
 const { GoogleSpreadsheet } = require("google-spreadsheet");
 
 export default createStore({
-  state: { inventoryItems: [] },
+  state: { inventoryItems: [], boxAmounts: [] },
 
   mutations: {
     SET_INVENTORY(state, _inventoryItems) {
       state.inventoryItems = _inventoryItems;
+    },
+
+    SET_BOX_AMOUNTS(state, _boxAmounts) {
+      state.boxAmounts = _boxAmounts;
     },
   },
 
@@ -15,6 +19,16 @@ export default createStore({
       return state.inventoryItems.find(
         (item) => item.Barcode !== "" && item.Barcode === barcode
       );
+    },
+
+    getItemBySku: (state) => (sku) => {
+      return state.inventoryItems.find((item) => item.SKU === sku);
+    },
+
+    getBoxAmount: (state) => (code) => {
+      var amount = state.boxAmounts.find((item) => item.Id === code).Amount;
+
+      return amount;
     },
   },
 
@@ -34,11 +48,24 @@ export default createStore({
 
       await doc.loadInfo();
 
-      const sheet = doc.sheetsByTitle["Inventory"];
+      const inventorySheet = doc.sheetsByTitle["Inventory"];
+      const boxAmountsSheet = doc.sheetsByTitle["Box Amounts"];
 
-      var inventoryItems = await Object.freeze(sheet.getRows());
+      var inventoryItems = await Object.freeze(inventorySheet.getRows());
+      var boxAmounts = await Object.freeze(boxAmountsSheet.getRows());
 
       commit("SET_INVENTORY", inventoryItems);
+      commit("SET_BOX_AMOUNTS", boxAmounts);
+    },
+
+    async updateItem({ getters }, item) {
+      var row = getters.getItemBySku(item.sku);
+
+      row.Overstock = item.overstock;
+      row.Pieces = item.pieces;
+      row.Total = item.overstock * item.boxCapacity + item.pieces;
+
+      await row.save();
     },
   },
 

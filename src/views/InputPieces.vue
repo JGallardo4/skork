@@ -34,7 +34,11 @@
       :item="selectedItemData"
     ></inventory-item>
 
-    <form class="form pieces-form" v-if="selectedItem">
+    <form
+      class="form pieces-form"
+      v-if="selectedItem"
+      v-on:submit.prevent="save()"
+    >
       <div class="form-field">
         <label for="pieces" class="field-label">
           <i class="fas fa-prescription-bottle icon"></i>
@@ -79,33 +83,15 @@ export default {
       if (this.selectedItem) {
         return this.selectedItem.Overstock === ""
           ? 0
-          : this.selectedItem.Pieces;
+          : this.parseNumber(this.selectedItem.Overstock);
       } else {
         return 0;
       }
     },
 
     boxCapacity() {
-      if (this.selectedItem["Pieces per box"] === "A") {
-        return 250;
-      } else if (this.selectedItem["Pieces per box"] === "B") {
-        return 160;
-      } else if (this.selectedItem["Pieces per box"] === "C") {
-        return 80;
-      } else if (this.selectedItem["Pieces per box"] === "D") {
-        return 114;
-      } else if (this.selectedItem["Pieces per box"] === "E") {
-        return 56;
-      } else {
-        return 0;
-      }
-    },
-
-    total() {
-      return (
-        this.parseNumber(this.selectedItem.Pieces) +
-        this.parseNumber(this.selectedItem.Overstock) *
-          this.parseNumber(this.boxCapacity)
+      return this.$store.getters.getBoxAmount(
+        this.selectedItem["Pieces per box"]
       );
     },
 
@@ -117,9 +103,9 @@ export default {
         Name: this.selectedItem.Name,
         MG: this.selectedItem.MG,
         Overstock: this.overstock,
-        Pieces: this.pieces,
+        Pieces: this.selectedItem.Pieces,
         "Pieces per Box": this.boxCapacity,
-        Total: this.total,
+        Total: this.selectedItem.Total,
       };
     },
   },
@@ -147,6 +133,17 @@ export default {
 
       return parsed;
     },
+
+    save() {
+      this.$store.dispatch("updateItem", {
+        sku: this.selectedItem.SKU,
+        overstock: this.parseNumber(this.selectedItem.Overstock),
+        boxCapacity: this.parseNumber(this.boxCapacity),
+        pieces: this.parseNumber(this.pieces),
+      });
+
+      this.next();
+    },
   },
 
   watch: {
@@ -163,8 +160,6 @@ export default {
 
 <style lang="scss" scoped>
 @use "../assets/css/_mixins.scss" as *;
-
-/* 628550153306 */
 
 .page-container {
   height: 150vh;
