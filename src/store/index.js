@@ -25,7 +25,7 @@ export default createStore({
       return state.inventoryItems.find((item) => item.SKU === sku);
     },
 
-    getBoxAmount: (state) => (code) => {
+    getBoxCapacity: (state) => (code) => {
       var amount = state.boxAmounts.find((item) => item.Id === code).Amount;
 
       return amount;
@@ -58,16 +58,36 @@ export default createStore({
       commit("SET_BOX_AMOUNTS", boxAmounts);
     },
 
-    async updateItem({ getters }, item) {
-      var row = getters.getItemBySku(item.sku);
+    // async updateItem({ getters }, item) {
+    //   var row = getters.getItemBySku(item.sku);
 
-      row.Overstock = item.overstock;
-      row.Pieces = item.pieces;
-      row.Total = item.overstock * item.boxCapacity + item.pieces;
+    //   row.Overstock = item.overstock;
+    //   row.Pieces = item.pieces;
+    //   row.Total = item.overstock * item.boxCapacity + item.pieces;
 
-      await row.save();
+    //   await row.save();
+    // },
+
+    async addOneOverstock({ getters }, sku) {
+      var item = getters.getItemBySku(sku);
+
+      if (item.Overstock === undefined) item.Overstock = 0;
+
+      item.Overstock++;
+
+      await item.save();
     },
   },
 
   modules: {},
 });
+
+// function parseNumber(x) {
+//   const parsed = parseInt(x, 10);
+
+//   if (isNaN(parsed)) {
+//     return 0;
+//   }
+
+//   return parsed;
+// }

@@ -9,7 +9,7 @@
 
     <p>Overstock: {{ item.Overstock }}</p>
     <p>Pieces: {{ item.Pieces }}</p>
-    <p>Pieces per box: {{ item["Pieces per Box"] }}</p>
+    <p>Pieces per box: {{ overstock }}</p>
     <p>Total: {{ item.Total }}</p>
   </article>
 </template>
@@ -19,6 +19,12 @@ export default {
   name: "InventoryItem",
 
   props: ["item"],
+
+  computed: {
+    overstock() {
+      return this.$store.getters.getBoxCapacity(this.item.BoxCapacity);
+    },
+  },
 };
 </script>
 

@@ -1,55 +1,12 @@
 <template>
   <div class="page-container">
-    <form class="barcode-form form">
-      <div class="form-field">
-        <label for="barcode" class="field-label">
-          <i class="fas fa-barcode icon"></i>
-        </label>
-        <input
-          id="barcode"
-          class="field-input"
-          v-model="barcode"
-          autofocus
-          ref="barcode"
-        />
-      </div>
-    </form>
-
     <section class="buttons">
-      <router-link to="/" class="button" tag="button"> Back </router-link>
-
-      <button
-        class="button next-button"
-        type="submit"
-        value="submit"
-        @click="next()"
-      >
-        Next
-      </button>
+      <router-link to="/" class="button back-button" tag="button">
+        Back
+      </router-link>
     </section>
 
-    <inventory-item
-      v-if="selectedItem"
-      class="selected-item"
-      :item="selectedItemData"
-    ></inventory-item>
-
-    <div class="overstock-count" v-show="selectedItem && boxCapacity !== '?'">
-      <p>Boxes: {{ overstockCount }}</p>
-    </div>
-
-    <div class="alert" v-show="selectedItem && boxCapacity === '?'">
-      <p>
-        This item does not have a set number of pieces per box. Please input
-        pieces directly.
-      </p>
-    </div>
-
-    <form
-      class="form overstock-form"
-      v-show="selectedItem && boxCapacity !== '?'"
-      v-on:submit.prevent="save()"
-    >
+    <form class="form overstock-form">
       <div class="form-field">
         <label for="overstock" class="field-label">
           <i class="fas fa-box icon"></i>
@@ -59,11 +16,25 @@
           id="overstock"
           class="field-input"
           ref="overstock"
-          v-model="overstockInput"
+          v-model="barcodeInput"
           type="number"
+          autofocus
         />
       </div>
     </form>
+
+    <inventory-item
+      v-if="selectedItem"
+      class="selected-item"
+      :item="selectedItem"
+    ></inventory-item>
+
+    <!-- <div class="alert" v-show="selectedItem && boxCapacity === '?'">
+      <p>
+        This item does not have a set number of pieces per box. Please input
+        pieces directly.
+      </p>
+    </div> -->
   </div>
 </template>
 
@@ -79,46 +50,13 @@ export default {
 
   data() {
     return {
-      isLoading: true,
-      barcode: "",
-      overstockInput: "",
-      overstockCount: 1,
+      barcodeInput: "",
     };
   },
 
   computed: {
     selectedItem() {
-      return this.$store.getters.getItemByBarcode(this.barcode);
-    },
-
-    overstock() {
-      if (this.selectedItem) {
-        return this.selectedItem.Overstock === ""
-          ? 0
-          : this.parseNumber(this.selectedItem.Overstock);
-      } else {
-        return 0;
-      }
-    },
-
-    boxCapacity() {
-      return this.$store.getters.getBoxAmount(
-        this.selectedItem["Pieces per box"]
-      );
-    },
-
-    selectedItemData() {
-      return {
-        Barcode: this.selectedItem.Barcode,
-        SKU: this.selectedItem.SKU,
-        Brand: this.selectedItem.Brand,
-        Name: this.selectedItem.Name,
-        MG: this.selectedItem.MG,
-        Overstock: this.overstock,
-        Pieces: this.selectedItem.Pieces,
-        "Pieces per Box": this.boxCapacity,
-        Total: this.selectedItem.Total,
-      };
+      return this.$store.getters.getItemByBarcode(this.barcodeInput);
     },
   },
 
@@ -126,55 +64,22 @@ export default {
     this.$store.dispatch("refreshData");
   },
 
-  mounted() {
-    this.$refs.barcode.focus();
-  },
-
-  methods: {
-    next() {
-      this.barcode = "";
-      this.overstockCount = 0;
-      this.$refs.barcode.focus();
-    },
-
-    parseNumber(x) {
-      const parsed = parseInt(x, 10);
-
-      if (isNaN(parsed)) {
-        return 0;
-      }
-
-      return parsed;
-    },
-
-    save() {
-      this.$store.dispatch("updateItem", {
-        sku: this.selectedItem.SKU,
-        overstock: this.parseNumber(this.overstockCount),
-        boxCapacity: this.parseNumber(this.boxCapacity),
-        pieces: this.parseNumber(this.selectedItem.Pieces),
-      });
-
-      this.next();
-    },
-  },
+  methods: {},
 
   watch: {
-    selectedItem: function (value) {
-      if (value !== undefined) {
+    barcodeInput: function () {
+      if (this.selectedItem) {
         this.$nextTick(() => {
-          this.$refs.overstock.focus();
+          this.$store.dispatch("addOneOverstock", this.selectedItem.SKU);
+          console.log(
+            this.selectedItem.Brand + " " + this.selectedItem.Name + " +1"
+          );
+        });
+
+        this.$nextTick(() => {
+          this.barcodeInput = "";
         });
       }
-    },
-
-    overstockInput: function (value) {
-      if (this.barcode === value) {
-        this.overstockCount++;
-      }
-
-      this.overstockInput = "";
-      this.$refs.overstock.focus();
     },
   },
 };
@@ -188,8 +93,9 @@ export default {
   height: 150vh;
   display: grid;
   grid-template-columns: 1fr;
-  grid-template-rows: auto auto auto auto 1fr;
+  grid-template-rows: auto auto 1fr;
   align-items: center;
+  gap: 0.5rem;
 
   .barcode-form {
     height: min-content;
@@ -245,6 +151,11 @@ export default {
   padding: 1rem;
 }
 
+.back-button {
+  border-radius: 0;
+  border-bottom-right-radius: 5px;
+}
+
 .counter-button {
   padding: 0 1rem 0 1rem;
 }
@@ -258,7 +169,6 @@ label {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 0 1rem 0 1rem;
 }
 
 .next-button {
