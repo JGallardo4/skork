@@ -1,7 +1,7 @@
 <template>
   <div class="page-container">
     <section class="header-buttons">
-      <router-link to="/" class="button back-button" tag="button">
+      <router-link to="/" class="button" id="back-button" tag="button">
         Back
       </router-link>
     </section>
@@ -141,8 +141,13 @@ export default {
   height: 150vh;
   display: grid;
   grid-template-columns: 1fr;
-  grid-template-rows: auto auto auto 1fr;
+  grid-template-rows: auto auto auto auto 1fr;
   align-items: center;
+
+  .header-buttons {
+    display: flex;
+    justify-items: left;
+  }
 
   .barcode-form {
     height: min-content;
@@ -177,10 +182,24 @@ export default {
   }
 }
 
+.buttons {
+  display: flex;
+  justify-content: right;
+  .next-button {
+    padding: 2rem;
+    font-size: x-large;
+  }
+}
+
 .button {
   @include button();
   font-size: large;
   padding: 1rem;
+}
+
+#back-button {
+  border-radius: 0;
+  border-bottom-right-radius: 5px;
 }
 
 label {
