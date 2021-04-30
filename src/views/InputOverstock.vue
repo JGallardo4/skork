@@ -71,6 +71,11 @@ export default {
       if (this.selectedItem) {
         this.$nextTick(() => {
           this.$store.dispatch("addOneOverstock", this.selectedItem.SKU);
+
+          this.$toast.show(
+            this.selectedItem.Brand + " " + this.selectedItem.Name + " +1"
+          );
+
           console.log(
             this.selectedItem.Brand + " " + this.selectedItem.Name + " +1"
           );
