@@ -120,15 +120,10 @@ export default {
 
   watch: {
     barcode: async function (value) {
-      this.$store.getters
-        .getItemByBarcode(value)
-        .then((item) => (this.selectedItem = item));
-
-      if (this.item !== undefined) {
-        this.$nextTick(() => {
-          this.$refs.pieces.focus();
-        });
-      }
+      this.$store.getters.getItemByBarcode(value).then((item) => {
+        this.selectedItem = item;
+        this.$refs.pieces.focus();
+      });
     },
   },
 };
