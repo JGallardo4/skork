@@ -1,5 +1,11 @@
 <template>
   <div class="page-container">
+    <section class="header-buttons">
+      <router-link to="/" class="button back-button" tag="button">
+        Back
+      </router-link>
+    </section>
+
     <form class="barcode-form form">
       <div class="form-field">
         <label for="barcode" class="field-label">
@@ -15,44 +21,44 @@
       </div>
     </form>
 
-    <section class="buttons">
-      <router-link to="/" class="button" tag="button"> Back </router-link>
+    <template v-if="selectedItem">
+      <section class="buttons">
+        <button
+          class="button next-button"
+          type="submit"
+          value="submit"
+          @click="save()"
+        >
+          Next
+        </button>
+      </section>
 
-      <button
-        class="button next-button"
-        type="submit"
-        value="submit"
-        @click="next()"
+      <inventory-item
+        v-if="selectedItem"
+        class="selected-item"
+        :item="selectedItem"
+      ></inventory-item>
+
+      <form
+        class="form pieces-form"
+        v-if="selectedItem"
+        v-on:submit.prevent="save()"
       >
-        Next
-      </button>
-    </section>
+        <div class="form-field">
+          <label for="pieces" class="field-label">
+            <i class="fas fa-prescription-bottle icon"></i>
+          </label>
 
-    <inventory-item
-      v-if="selectedItem"
-      class="selected-item"
-      :item="selectedItemData"
-    ></inventory-item>
-
-    <form
-      class="form pieces-form"
-      v-if="selectedItem"
-      v-on:submit.prevent="save()"
-    >
-      <div class="form-field">
-        <label for="pieces" class="field-label">
-          <i class="fas fa-prescription-bottle icon"></i>
-        </label>
-
-        <input
-          id="pieces"
-          class="field-input"
-          v-model="pieces"
-          ref="pieces"
-          type="number"
-        />
-      </div>
-    </form>
+          <input
+            id="pieces"
+            class="field-input"
+            v-model="pieces"
+            ref="pieces"
+            type="number"
+          />
+        </div>
+      </form>
+    </template>
   </div>
 </template>
 
@@ -68,50 +74,12 @@ export default {
 
   data() {
     return {
-      isLoading: true,
       barcode: "",
+
+      selectedItem: undefined,
+
       pieces: "",
     };
-  },
-
-  computed: {
-    selectedItem() {
-      return this.$store.getters.getItemByBarcode(this.barcode);
-    },
-
-    overstock() {
-      if (this.selectedItem) {
-        return this.selectedItem.Overstock === ""
-          ? 0
-          : this.parseNumber(this.selectedItem.Overstock);
-      } else {
-        return 0;
-      }
-    },
-
-    boxCapacity() {
-      return this.$store.getters.getBoxAmount(
-        this.selectedItem["Pieces per box"]
-      );
-    },
-
-    selectedItemData() {
-      return {
-        Barcode: this.selectedItem.Barcode,
-        SKU: this.selectedItem.SKU,
-        Brand: this.selectedItem.Brand,
-        Name: this.selectedItem.Name,
-        MG: this.selectedItem.MG,
-        Overstock: this.overstock,
-        Pieces: this.selectedItem.Pieces,
-        "Pieces per Box": this.boxCapacity,
-        Total: this.selectedItem.Total,
-      };
-    },
-  },
-
-  created() {
-    this.$store.dispatch("refreshData");
   },
 
   mounted() {
@@ -134,21 +102,29 @@ export default {
       return parsed;
     },
 
-    save() {
-      this.$store.dispatch("updateItem", {
-        sku: this.selectedItem.SKU,
-        overstock: this.parseNumber(this.selectedItem.Overstock),
-        boxCapacity: this.parseNumber(this.boxCapacity),
-        pieces: this.parseNumber(this.pieces),
-      });
+    async save() {
+      var boxCapacity = await this.$store.getters.getBoxCapacity(
+        this.selectedItem.BoxCapacity
+      );
+
+      this.selectedItem.Pieces = this.parseNumber(this.pieces);
+
+      this.selectedItem.Total =
+        boxCapacity * this.selectedItem.Overstock + this.selectedItem.Pieces;
+
+      await this.selectedItem.save();
 
       this.next();
     },
   },
 
   watch: {
-    selectedItem: function (value) {
-      if (value !== undefined) {
+    barcode: async function (value) {
+      this.$store.getters
+        .getItemByBarcode(value)
+        .then((item) => (this.selectedItem = item));
+
+      if (this.item !== undefined) {
         this.$nextTick(() => {
           this.$refs.pieces.focus();
         });
@@ -207,24 +183,8 @@ export default {
   padding: 1rem;
 }
 
-.counter-button {
-  padding: 0 1rem 0 1rem;
-}
-
 label {
   display: grid;
   place-items: center;
-}
-
-.buttons {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 0 1rem 0 1rem;
-}
-
-.next-button {
-  padding: 1.6rem;
-  font-size: xx-large;
 }
 </style>

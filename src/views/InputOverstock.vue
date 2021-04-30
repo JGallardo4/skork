@@ -60,6 +60,10 @@ export default {
           this.$toast.show(
             item.Brand + " " + item.Name + "\nOverstock: " + item.Overstock
           );
+
+          this.barcode = "";
+
+          this.$refs.barcode.focus();
         }
       });
     },

@@ -42,26 +42,8 @@ export default createStore({
       var sheet = await getters.getBoxAmountsSheet;
       var rows = Array.from(await sheet.getRows());
 
-      console.log(rows);
-
       return rows.find((item) => item.Id === code).Amount;
     },
-  },
-
-  actions: {
-    // parseOverstockBarcode(barcode) {
-    // },
-    // parseOverstockBarcode: (state, getters) => async (barcode) => {
-    //   console.log(barcode);
-    //   var item = getters.getItemByBarcode(barcode);
-    //   console.log(item);
-    //   if (item) {
-    //     if (item.Overstock === undefined) item.Overstock = 0;
-    //     item.Overstock++;
-    //     await item.save();
-    //     this.$toast.show(item.Brand + " " + item.Name + " +1");
-    //   }
-    // },
   },
 });
 
