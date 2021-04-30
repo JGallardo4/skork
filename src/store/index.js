@@ -2,92 +2,80 @@ import { createStore } from "vuex";
 const { GoogleSpreadsheet } = require("google-spreadsheet");
 
 export default createStore({
-  state: { inventoryItems: [], boxAmounts: [] },
+  state: { inventoryDoc: getInventoryDoc() },
 
   mutations: {
-    SET_INVENTORY(state, _inventoryItems) {
-      state.inventoryItems = _inventoryItems;
-    },
-
-    SET_BOX_AMOUNTS(state, _boxAmounts) {
-      state.boxAmounts = _boxAmounts;
+    SET_INVENTORY_SHEET(state, inventorySheet) {
+      state.inventorySheet = inventorySheet;
     },
   },
 
   getters: {
-    getItemByBarcode: (state) => (barcode) => {
-      return state.inventoryItems.find(
+    getInventorySheet: async (state) => {
+      var doc = await state.inventoryDoc;
+
+      var sheet = doc.sheetsByTitle["Inventory"];
+
+      return sheet;
+    },
+
+    getBoxAmountsSheet: async (state) => {
+      var doc = await state.inventoryDoc;
+
+      var sheet = doc.sheetsByTitle["Box Amounts"];
+
+      return sheet;
+    },
+
+    getItemByBarcode: (state, getters) => async (barcode) => {
+      if (barcode === "") return undefined;
+
+      var sheet = await getters.getInventorySheet;
+      var rows = await sheet.getRows();
+
+      return rows.find(
         (item) => item.Barcode !== "" && item.Barcode === barcode
       );
     },
 
-    getItemBySku: (state) => (sku) => {
-      return state.inventoryItems.find((item) => item.SKU === sku);
-    },
+    getBoxCapacity: (state, getters) => async (code) => {
+      var sheet = await getters.getBoxAmountsSheet;
+      var rows = Array.from(await sheet.getRows());
 
-    getBoxCapacity: (state) => (code) => {
-      var amount = state.boxAmounts.find((item) => item.Id === code).Amount;
+      console.log(rows);
 
-      return amount;
+      return rows.find((item) => item.Id === code).Amount;
     },
   },
 
   actions: {
-    async refreshData({ commit }) {
-      const doc = new GoogleSpreadsheet(
-        "1dp5vKTq9V5DfhpDsCq1XWpmuVDz7oiuTVy-rOO23I7w"
-      );
-
-      await doc.useServiceAccountAuth({
-        client_email: process.env.VUE_APP_GOOGLE_SERVICE_ACCOUNT_EMAIL,
-        private_key: process.env.VUE_APP_GOOGLE_PRIVATE_KEY.replace(
-          /\\n/g,
-          "\n"
-        ),
-      });
-
-      await doc.loadInfo();
-
-      const inventorySheet = doc.sheetsByTitle["Inventory"];
-      const boxAmountsSheet = doc.sheetsByTitle["Box Amounts"];
-
-      var inventoryItems = await Object.freeze(inventorySheet.getRows());
-      var boxAmounts = await Object.freeze(boxAmountsSheet.getRows());
-
-      commit("SET_INVENTORY", inventoryItems);
-      commit("SET_BOX_AMOUNTS", boxAmounts);
-    },
-
-    // async updateItem({ getters }, item) {
-    //   var row = getters.getItemBySku(item.sku);
-
-    //   row.Overstock = item.overstock;
-    //   row.Pieces = item.pieces;
-    //   row.Total = item.overstock * item.boxCapacity + item.pieces;
-
-    //   await row.save();
+    // parseOverstockBarcode(barcode) {
     // },
-
-    async addOneOverstock({ getters }, sku) {
-      var item = getters.getItemBySku(sku);
-
-      if (item.Overstock === undefined) item.Overstock = 0;
-
-      item.Overstock++;
-
-      await item.save();
-    },
+    // parseOverstockBarcode: (state, getters) => async (barcode) => {
+    //   console.log(barcode);
+    //   var item = getters.getItemByBarcode(barcode);
+    //   console.log(item);
+    //   if (item) {
+    //     if (item.Overstock === undefined) item.Overstock = 0;
+    //     item.Overstock++;
+    //     await item.save();
+    //     this.$toast.show(item.Brand + " " + item.Name + " +1");
+    //   }
+    // },
   },
-
-  modules: {},
 });
 
-// function parseNumber(x) {
-//   const parsed = parseInt(x, 10);
+async function getInventoryDoc() {
+  const doc = new GoogleSpreadsheet(
+    "1dp5vKTq9V5DfhpDsCq1XWpmuVDz7oiuTVy-rOO23I7w"
+  );
 
-//   if (isNaN(parsed)) {
-//     return 0;
-//   }
+  await doc.useServiceAccountAuth({
+    client_email: process.env.VUE_APP_GOOGLE_SERVICE_ACCOUNT_EMAIL,
+    private_key: process.env.VUE_APP_GOOGLE_PRIVATE_KEY.replace(/\\n/g, "\n"),
+  });
 
-//   return parsed;
-// }
+  await doc.loadInfo();
+
+  return doc;
+}

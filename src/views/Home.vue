@@ -37,15 +37,7 @@ export default {
     // Spinner,
   },
 
-  computed: {
-    inventoryItems() {
-      return this.$store.state.inventoryItems;
-    },
-  },
-
-  created() {
-    this.$store.dispatch("refreshData").then(() => (this.isLoading = false));
-  },
+  computed: {},
 };
 </script>
 

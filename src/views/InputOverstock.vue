@@ -13,21 +13,15 @@
         </label>
 
         <input
-          id="overstock"
+          id="barcode"
           class="field-input"
-          ref="overstock"
-          v-model="barcodeInput"
+          ref="barcode"
+          v-model="barcode"
           type="number"
           autofocus
         />
       </div>
     </form>
-
-    <inventory-item
-      v-if="selectedItem"
-      class="selected-item"
-      :item="selectedItem"
-    ></inventory-item>
 
     <!-- <div class="alert" v-show="selectedItem && boxCapacity === '?'">
       <p>
@@ -39,52 +33,35 @@
 </template>
 
 <script>
-import InventoryItem from "../components/InventoryItem.vue";
+import { mapActions } from "vuex";
 
 export default {
   name: "InputOverstock",
 
-  components: {
-    InventoryItem,
-  },
-
-  data() {
+  data: function () {
     return {
-      barcodeInput: "",
+      barcode: {
+        type: Number,
+      },
     };
   },
 
-  computed: {
-    selectedItem() {
-      return this.$store.getters.getItemByBarcode(this.barcodeInput);
-    },
-  },
-
-  created() {
-    this.$store.dispatch("refreshData");
-  },
-
-  methods: {},
+  methods: mapActions(["parseOverstockBarcode"]),
 
   watch: {
-    barcodeInput: function () {
-      if (this.selectedItem) {
-        this.$nextTick(() => {
-          this.$store.dispatch("addOneOverstock", this.selectedItem.SKU);
+    barcode: async function (value) {
+      this.$store.getters.getItemByBarcode(value).then((item) => {
+        if (item) {
+          if (item.Overstock === undefined) item.Overstock = 0;
+          item.Overstock++;
+
+          item.save();
 
           this.$toast.show(
-            this.selectedItem.Brand + " " + this.selectedItem.Name + " +1"
+            item.Brand + " " + item.Name + "\nOverstock: " + item.Overstock
           );
-
-          console.log(
-            this.selectedItem.Brand + " " + this.selectedItem.Name + " +1"
-          );
-        });
-
-        this.$nextTick(() => {
-          this.barcodeInput = "";
-        });
-      }
+        }
+      });
     },
   },
 };
