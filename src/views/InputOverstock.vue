@@ -19,6 +19,7 @@
           v-model="barcode"
           type="number"
           autofocus
+          autocomplete="off"
         />
       </div>
     </form>

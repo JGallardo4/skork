@@ -16,6 +16,7 @@
           class="field-input"
           v-model="barcode"
           ref="barcode"
+          autocomplete="off"
         />
       </div>
     </form>
@@ -54,6 +55,7 @@
             v-model="pieces"
             ref="pieces"
             type="number"
+            autocomplete="off"
           />
         </div>
       </form>
