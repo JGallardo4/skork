@@ -15,7 +15,6 @@
           id="barcode"
           class="field-input"
           v-model="barcode"
-          autofocus
           ref="barcode"
         />
       </div>
@@ -124,6 +123,14 @@ export default {
         this.selectedItem = item;
         this.$refs.pieces.focus();
       });
+    },
+
+    selectedItem: function (value) {
+      if (value !== undefined) {
+        this.$nextTick(() => {
+          this.$refs.pieces.focus();
+        });
+      }
     },
   },
 };
