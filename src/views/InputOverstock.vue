@@ -66,81 +66,21 @@ export default {
 
       if (item.Pieces === undefined) item.Pieces = 0;
 
-      console.log(item.Overstock);
-      console.log(item.Pieces);
-
       var total =
         this.parseNumber(boxCapacity) * this.parseNumber(item.Overstock) +
         this.parseNumber(item.Pieces);
 
-      console.log(item.Pieces);
+      item.Total = total;
+      item.save();
+
+      this.$toast.show(
+        item.Brand + " " + item.Name + "\nOverstock: " + item.Overstock
+      );
+
+      this.barcode = "";
+
+      this.$refs.barcode.focus();
     },
-
-    // barcode: async function (value) {
-    //   this.$store.getters.getItemByBarcode(value).then((item) => {
-    //     this.$store.getters
-    //       .getBoxCapacity(item.BoxCapacity)
-    //       .then((boxCapacity) => {
-    //         if (item.Overstock === undefined) item.Overstock = 0;
-    //         item.Overstock++;
-
-    //         if (item.Pieces === undefined) item.Pieces = 0;
-
-    //         var total =
-    //           this.parseNumber(boxCapacity) * this.parseNumber(item.Overstock) +
-    //           this.parseNumber(item.Pieces);
-
-    //         item.Total = total;
-
-    //         this.$toast.show(
-    //           item.Brand + " " + item.Name + "\nOverstock: " + item.Overstock
-    //         );
-
-    //         this.barcode = "";
-
-    //         this.$refs.barcode.focus();
-    //       });
-    //   });
-    // },
-
-    // barcode: async function (value) {
-    //   this.$store.getters.getItemByBarcode(value).then((item) => {
-    //     if (item) {
-    //       var boxCapacity = await this.parseNumber(
-    //         this.$store.getters.getBoxCapacity(item.BoxCapacity)
-    //       );
-
-    //       if (item.Overstock === undefined) item.Overstock = 0;
-    //       item.Overstock++;
-
-    //       if (item.Pieces === undefined) item.Pieces = 0;
-
-    //       var total =
-    //         this.parseNumber(boxCapacity) * this.parseNumber(item.Overstock) +
-    //         this.parseNumber(item.Pieces);
-
-    //       console.log(this.$store.getters.getBoxCapacity(item.BoxCapacity));
-    //       console.log(this.parseNumber(boxCapacity));
-    //       console.log(this.parseNumber(item.Overstock));
-    //       console.log(this.parseNumber(item.Pieces));
-
-    //       console.log(total);
-    //       item.Total = total;
-
-    //       console.log(item.Total);
-
-    //       item.save();
-
-    //       this.$toast.show(
-    //         item.Brand + " " + item.Name + "\nOverstock: " + item.Overstock
-    //       );
-
-    //       this.barcode = "";
-
-    //       this.$refs.barcode.focus();
-    //     }
-    //   });
-    // },
   },
 };
 </script>
