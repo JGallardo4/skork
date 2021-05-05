@@ -8,6 +8,8 @@
       <i class="fas fa-arrow-alt-circle-left icon"></i>
     </button>
 
+    <p>{{ currentPage }}</p>
+
     <button
       :disabled="isNextButtonDisabled"
       @click.prevent="nextPage"

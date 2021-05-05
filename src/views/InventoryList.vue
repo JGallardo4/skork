@@ -1,18 +1,18 @@
 <template>
   <section class="list-container">
     <nav class="filter-buttons">
-      <button @click="selectedItems = items" class="filter-button">All</button>
-      <button @click="selectedItems = uncountedOverstock" class="filter-button">
+      <button @click.prevent="filter = 'all'" class="filter-button">All</button>
+      <button @click.prevent="filter = 'overstock'" class="filter-button">
         Overstock
       </button>
-      <button @click="selectedItems = uncountedPieces" class="filter-button">
+      <button @click.prevent="filter = 'pieces'" class="filter-button">
         Pieces
       </button>
     </nav>
 
     <div class="inventory-items">
       <inventory-list-item
-        v-for="(item, index) in selectedItems"
+        v-for="(item, index) in shownItems"
         :key="index"
         :item="item"
       />
@@ -37,33 +37,58 @@ export default {
 
   name: "InventoryList",
 
-  static: {
-    visibleItemsPerPageCount: 2,
-  },
-
   data() {
     return {
       items: [],
-      selectedItems: [],
+      filter: "all",
       currentPage: 1,
-      pageCount: 0,
+      visibleItemsPerPageCount: 10,
     };
   },
 
   mounted() {
-    // Initialize items
-    this.$store.getters
-      .getItemsByRange({ offset: 0, limit: 10 })
-      .then((result) => (this.items = result));
+    this.loadItems();
   },
 
   computed: {
-    uncountedOverstock() {
-      return this.items.filter((item) => item.Overstock === undefined);
+    //   uncountedOverstock() {
+    //     return this.items.filter((item) => item.Overstock === undefined);
+    //   },
+
+    //   uncountedPieces() {
+    //     return this.items.filter((item) => item.Pieces === undefined);
+    //   },
+
+    pageCount() {
+      return Math.floor(this.shownItems.length / this.visibleItemsPerPageCount);
     },
 
-    uncountedPieces() {
-      return this.items.filter((item) => item.Pieces === undefined);
+    shownItems() {
+      var filtered = [];
+
+      switch (this.filter) {
+        case "all":
+          filtered = this.items;
+          break;
+        case "overstock":
+          filtered = this.items.filter(
+            (item) => item.Overstock === undefined || item.Overstock === ""
+          );
+          break;
+        case "pieces":
+          filtered = this.items.filter(
+            (item) => item.Pieces === undefined || item.Pieces === ""
+          );
+          break;
+      }
+
+      var start =
+        this.currentPage * this.visibleItemsPerPageCount -
+        this.visibleItemsPerPageCount;
+
+      var end = start + this.visibleItemsPerPageCount;
+
+      return filtered.slice(start, end);
     },
   },
 
@@ -79,15 +104,13 @@ export default {
         default:
           this.currentPage = value;
       }
-
-      this.loadItems();
     },
 
     loadItems() {
       this.$store.getters
         .getItemsByRange({
-          offset: this.currentPage,
-          limit: 2,
+          offset: 0,
+          limit: 50,
         })
         .then((result) => (this.items = result));
     },
@@ -102,7 +125,7 @@ export default {
   height: 100vh;
   display: grid;
   grid-template-columns: 1fr;
-  grid-template-rows: 1fr auto;
+  grid-template-rows: auto 1fr auto;
 }
 
 .pagination-navigation {

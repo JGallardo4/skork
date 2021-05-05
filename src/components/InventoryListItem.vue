@@ -7,8 +7,8 @@
       </span>
     </label>
 
-    <p>Overstock: {{ item.Overstock }}</p>
-    <p>Pieces: {{ item.Pieces }}</p>
+    <p>Overstock: {{ item.Overstock ? item.Overstock : 0 }}</p>
+    <p>Pieces: {{ item.Pieces ? item.Pieces : 0 }}</p>
   </article>
 </template>
 
@@ -17,18 +17,6 @@ export default {
   name: "InventoryListItem",
 
   props: ["item"],
-
-  data() {
-    return {
-      boxCapacity: "",
-    };
-  },
-
-  mounted() {
-    this.$store.getters
-      .getBoxCapacity(this.item.BoxCapacity)
-      .then((boxCapacity) => (this.boxCapacity = boxCapacity));
-  },
 };
 </script>
 
@@ -40,10 +28,11 @@ export default {
 }
 
 .inventory-item {
+  font-size: 0.85rem;
   padding: 1rem;
 
   .inventory-item__title {
-    padding-bottom: 1rem;
+    padding-bottom: 0.6rem;
   }
 
   p,
