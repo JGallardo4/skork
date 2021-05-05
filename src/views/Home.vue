@@ -6,12 +6,14 @@
     <!-- <pages></pages> -->
 
     <section class="main-buttons">
-      <router-link
-        class="main-button overstock"
-        to="/input-overstock"
-        tag="button"
-        >Overstock</router-link
-      >
+      <router-link class="main-button" to="/list" tag="button">
+        List
+      </router-link>
+
+      <router-link class="main-button" to="/input-overstock" tag="button">
+        Overstock
+      </router-link>
+
       <router-link class="main-button pieces" to="/input-pieces" tag="button"
         >Pieces</router-link
       >
@@ -49,7 +51,7 @@ export default {
   height: 100vh;
   display: grid;
   grid-template-columns: 1fr;
-  grid-template-rows: 2fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
 
   .main-button {
     @include button();

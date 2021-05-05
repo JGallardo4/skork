@@ -44,6 +44,13 @@ export default createStore({
 
       return rows.find((item) => item.Id === code).Amount;
     },
+
+    getItemsByRange: (state, getters) => async (options) => {
+      var sheet = await getters.getInventorySheet;
+      var rows = await sheet.getRows(options);
+
+      return rows;
+    },
   },
 });
 
