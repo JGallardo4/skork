@@ -87,8 +87,10 @@ export default {
 
   methods: {
     next() {
-      this.$refs.barcode.focus();
       this.barcode = "";
+      this.$nextTick(() => {
+        this.$refs.barcode.focus();
+      });
     },
 
     parseNumber(x) {
