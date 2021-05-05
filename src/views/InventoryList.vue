@@ -10,9 +10,24 @@
       </button>
     </nav>
 
+    <form class="form overstock-form">
+      <div class="form-field">
+        <label for="filter-brand" class="field-label"> Filter </label>
+
+        <input
+          id="filter-brand"
+          class="field-input"
+          ref="filter-brand"
+          v-model="filterBrand"
+          type="text"
+          autofocus
+        />
+      </div>
+    </form>
+
     <div class="inventory-items">
       <inventory-list-item
-        v-for="(item, index) in shownItems"
+        v-for="(item, index) in filteredItems"
         :key="index"
         :item="item"
       />
@@ -43,6 +58,7 @@ export default {
       filter: "all",
       currentPage: 1,
       visibleItemsPerPageCount: 10,
+      filterBrand: "",
     };
   },
 
@@ -51,14 +67,6 @@ export default {
   },
 
   computed: {
-    //   uncountedOverstock() {
-    //     return this.items.filter((item) => item.Overstock === undefined);
-    //   },
-
-    //   uncountedPieces() {
-    //     return this.items.filter((item) => item.Pieces === undefined);
-    //   },
-
     pageCount() {
       return Math.floor(this.shownItems.length / this.visibleItemsPerPageCount);
     },
@@ -80,6 +88,20 @@ export default {
             (item) => item.Pieces === undefined || item.Pieces === ""
           );
           break;
+      }
+
+      return filtered;
+    },
+
+    filteredItems() {
+      var filtered = [];
+
+      if (this.filterBrand == "") {
+        filtered = this.shownItems;
+      } else {
+        filtered = this.shownItems.filter((item) =>
+          item.Brand.includes(this.filterBrand)
+        );
       }
 
       var start =
@@ -110,7 +132,7 @@ export default {
       this.$store.getters
         .getItemsByRange({
           offset: 0,
-          limit: 50,
+          limit: 100,
         })
         .then((result) => (this.items = result));
     },
@@ -146,6 +168,21 @@ export default {
   .filter-button {
     @include button();
     font-size: x-large;
+  }
+}
+
+.form-field {
+  display: flex;
+  padding: 0.5rem;
+
+  label {
+    padding: 0.5rem;
+    flex-grow: 0;
+  }
+
+  input {
+    flex-grow: 3;
+    padding: 0.5rem;
   }
 }
 </style>
