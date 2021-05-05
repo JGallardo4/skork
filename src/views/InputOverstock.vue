@@ -6,7 +6,7 @@
       </router-link>
     </section>
 
-    <form class="form overstock-form">
+    <form class="form overstock-form" autocomplete="off">
       <div class="form-field">
         <label for="overstock" class="field-label">
           <i class="fas fa-box icon"></i>

@@ -6,7 +6,7 @@
       </router-link>
     </section>
 
-    <form class="barcode-form form">
+    <form class="barcode-form form" autocomplete="off">
       <div class="form-field">
         <label for="barcode" class="field-label">
           <i class="fas fa-barcode icon"></i>
@@ -43,6 +43,7 @@
         class="form pieces-form"
         v-if="selectedItem"
         v-on:submit.prevent="save()"
+        autocomplete="off"
       >
         <div class="form-field">
           <label for="pieces" class="field-label">
@@ -54,7 +55,7 @@
             class="field-input"
             v-model="pieces"
             ref="pieces"
-            type="number"
+            type="search"
             autocomplete="off"
           />
         </div>
@@ -126,6 +127,7 @@ export default {
       this.$store.getters.getItemByBarcode(value).then((item) => {
         this.selectedItem = item;
         this.$refs.pieces.focus();
+        this.pieces = "";
       });
     },
 
