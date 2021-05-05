@@ -8,7 +8,7 @@
       <i class="fas fa-arrow-alt-circle-left icon"></i>
     </button>
 
-    <p>{{ currentPage }}</p>
+    <p>{{ currentPage }} / {{ pageCount }}</p>
 
     <button
       :disabled="isNextButtonDisabled"

@@ -100,7 +100,7 @@ export default {
         filtered = this.shownItems;
       } else {
         filtered = this.shownItems.filter((item) =>
-          item.Brand.includes(this.filterBrand)
+          item.Brand.includes(this.filterBrand.toUpperCase())
         );
       }
 
@@ -130,11 +130,14 @@ export default {
 
     loadItems() {
       this.$store.getters
-        .getItemsByRange({
-          offset: 0,
-          limit: 100,
-        })
+        .getItemsByRange({})
         .then((result) => (this.items = result));
+    },
+  },
+
+  watch: {
+    filterBrand: function () {
+      this.currentPage = 1;
     },
   },
 };
@@ -154,6 +157,7 @@ export default {
   padding: 1rem;
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
 
 .inventory-items {
