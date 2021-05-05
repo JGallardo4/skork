@@ -1,11 +1,19 @@
 <template>
-  <div class="base-pagination">
-    <button :disabled="isPreviousButtonDisabled" @click.prevent="previousPage">
-      ←
+  <div class="pagination-container">
+    <button
+      :disabled="isPreviousButtonDisabled"
+      @click.prevent="previousPage"
+      class="arrow-button"
+    >
+      <i class="fas fa-arrow-alt-circle-left icon"></i>
     </button>
 
-    <button :disabled="isNextButtonDisabled" @click.prevent="nextPage">
-      →
+    <button
+      :disabled="isNextButtonDisabled"
+      @click.prevent="nextPage"
+      class="arrow-button"
+    >
+      <i class="fas fa-arrow-alt-circle-right icon"></i>
     </button>
   </div>
 </template>
@@ -46,4 +54,25 @@ export default {
 };
 </script>
 
-<style></style>
+<style lang="scss" scoped>
+@use "../assets/css/_variables.scss" as *;
+
+.arrow-button {
+  border: none;
+  background-color: inherit;
+  color: white;
+  font-size: 2.5rem;
+
+  &:hover {
+    color: $highlight3;
+  }
+
+  &:active {
+    color: $highlight2;
+  }
+
+  &:disabled {
+    color: gray;
+  }
+}
+</style>
