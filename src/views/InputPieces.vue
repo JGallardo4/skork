@@ -111,10 +111,16 @@ export default {
         this.selectedItem.BoxCapacity
       );
 
-      this.selectedItem.Pieces = this.parseNumber(this.pieces);
+      if (this.pieces === "") {
+        this.selectedItem.Pieces = "";
 
-      this.selectedItem.Total =
-        boxCapacity * this.selectedItem.Overstock + this.selectedItem.Pieces;
+        this.selectedItem.Total = boxCapacity * this.selectedItem.Overstock;
+      } else {
+        this.selectedItem.Pieces = this.parseNumber(this.pieces);
+
+        this.selectedItem.Total =
+          boxCapacity * this.selectedItem.Overstock + this.selectedItem.Pieces;
+      }
 
       await this.selectedItem.save();
 
