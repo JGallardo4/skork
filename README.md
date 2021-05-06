@@ -1,4 +1,4 @@
-# valor-inventory
+# skork
 
 ## Project setup
 
