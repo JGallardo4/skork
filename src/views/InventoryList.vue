@@ -1,5 +1,11 @@
 <template>
   <section class="list-container">
+    <section class="buttons">
+      <router-link to="/" class="button back-button" tag="button">
+        Back
+      </router-link>
+    </section>
+
     <nav class="filter-buttons">
       <button @click.prevent="filter = 'all'" class="filter-button">All</button>
       <button @click.prevent="filter = 'overstock'" class="filter-button">
@@ -188,5 +194,22 @@ export default {
     flex-grow: 3;
     padding: 0.5rem;
   }
+}
+
+.button {
+  @include button();
+  font-size: large;
+  padding: 1rem;
+}
+
+.back-button {
+  border-radius: 0;
+  border-bottom-right-radius: 5px;
+}
+
+.buttons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 </style>

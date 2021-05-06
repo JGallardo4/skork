@@ -40,6 +40,10 @@ export default {
     };
   },
 
+  mounted() {
+    this.$refs.barcode.focus();
+  },
+
   methods: {
     ...mapActions(["parseOverstockBarcode"]),
 
