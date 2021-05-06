@@ -107,19 +107,21 @@ export default {
     },
 
     async save() {
-      var boxCapacity = await this.$store.getters.getBoxCapacity(
-        this.selectedItem.BoxCapacity
+      var boxCapacity = this.parseNumber(
+        await this.$store.getters.getBoxCapacity(this.selectedItem.BoxCapacity)
       );
 
       if (this.pieces === "") {
         this.selectedItem.Pieces = "";
 
-        this.selectedItem.Total = boxCapacity * this.selectedItem.Overstock;
+        this.selectedItem.Total =
+          boxCapacity * this.parseNumber(this.selectedItem.Overstock);
       } else {
         this.selectedItem.Pieces = this.parseNumber(this.pieces);
 
         this.selectedItem.Total =
-          boxCapacity * this.selectedItem.Overstock + this.selectedItem.Pieces;
+          boxCapacity * this.parseNumber(this.selectedItem.Overstock) +
+          this.selectedItem.Pieces;
       }
 
       await this.selectedItem.save();
