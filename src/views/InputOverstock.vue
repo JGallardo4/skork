@@ -69,7 +69,7 @@ export default {
       if (item.Overstock === undefined) item.Overstock = 0;
       item.Overstock++;
 
-      if (item.Pieces === undefined) item.Pieces = 0;
+      // if (item.Pieces === undefined) item.Pieces = 0;
 
       var total =
         this.parseNumber(boxCapacity) * this.parseNumber(item.Overstock) +
@@ -79,7 +79,11 @@ export default {
       item.save();
 
       this.$toast.show(
-        item.Brand + " " + item.Name + "\nOverstock: " + item.Overstock
+        item.Brand + " " + item.Name + "\nOverstock: " + item.Overstock,
+        {
+          max: 6,
+          duration: false,
+        }
       );
 
       this.barcode = "";
