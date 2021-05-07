@@ -28,9 +28,16 @@
 
 <script>
 import { mapActions } from "vuex";
+import { useToast } from "vue-toastification";
 
 export default {
   name: "InputOverstock",
+
+  setup() {
+    const toast = useToast();
+
+    return { toast };
+  },
 
   data: function () {
     return {
@@ -69,8 +76,6 @@ export default {
       if (item.Overstock === undefined) item.Overstock = 0;
       item.Overstock++;
 
-      // if (item.Pieces === undefined) item.Pieces = 0;
-
       var total =
         this.parseNumber(boxCapacity) * this.parseNumber(item.Overstock) +
         this.parseNumber(item.Pieces);
@@ -78,12 +83,9 @@ export default {
       item.Total = total;
       item.save();
 
-      this.$toast.show(
-        item.Brand + " " + item.Name + "\nOverstock: " + item.Overstock,
-        {
-          max: 6,
-          duration: false,
-        }
+      this.toast.clear();
+      this.toast.info(
+        item.Brand + " " + item.Name + "\nOverstock: " + item.Overstock
       );
 
       this.barcode = "";
