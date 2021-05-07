@@ -6,9 +6,9 @@
     <!-- <pages></pages> -->
 
     <section class="main-buttons">
-      <router-link class="main-button" to="/list" tag="button">
+      <!-- <router-link class="main-button" to="/list" tag="button">
         List
-      </router-link>
+      </router-link> -->
 
       <router-link class="main-button" to="/input-overstock" tag="button">
         Overstock

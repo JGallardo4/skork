@@ -3,7 +3,7 @@ import Home from "../views/Home.vue";
 import InputOverstock from "../views/InputOverstock.vue";
 import InputPieces from "../views/InputPieces.vue";
 import WorkerExample from "../views/WorkerExample.vue";
-import InventoryList from "../views/InventoryList.vue";
+// import InventoryList from "../views/InventoryList.vue";
 
 const routes = [
   {
@@ -24,11 +24,11 @@ const routes = [
     component: InputPieces,
   },
 
-  {
-    path: "/list",
-    name: "List",
-    component: InventoryList,
-  },
+  // {
+  //   path: "/list",
+  //   name: "List",
+  //   component: InventoryList,
+  // },
 
   {
     path: "/worker",

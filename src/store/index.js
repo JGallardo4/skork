@@ -51,6 +51,16 @@ export default createStore({
 
       return rows;
     },
+
+    getBarcodes: (getters) => async () => {
+      var sheet = await getters.getInventorySheet;
+
+      await sheet.loadCells("C:C");
+
+      var barcodes = await sheet.getRows();
+
+      return barcodes;
+    },
   },
 });
 
