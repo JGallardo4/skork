@@ -29,6 +29,7 @@
 <script>
 import { mapActions } from "vuex";
 import { useToast } from "vue-toastification";
+// import { useSound } from "@vueuse/sound";
 
 export default {
   name: "InputOverstock",
@@ -36,7 +37,9 @@ export default {
   setup() {
     const toast = useToast();
 
-    return { toast };
+    const beep = new Audio(require("../assets/sounds/beep.mp3"));
+
+    return { toast, beep };
   },
 
   data: function () {
@@ -91,6 +94,8 @@ export default {
       this.barcode = "";
 
       this.$refs.barcode.focus();
+
+      this.beep.play();
     },
   },
 };

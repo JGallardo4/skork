@@ -12,6 +12,7 @@
     "@fortawesome/free-solid-svg-icons": "^5.15.3",
     "@fortawesome/vue-fontawesome": "^3.0.0-3",
     "@meforma/vue-toaster": "^1.2.2",
+    "@vueuse/sound": "^1.1.7",
     "core-js": "^3.6.5",
     "epic-spinners": "^1.1.0",
     "google-spreadsheet": "^3.1.15",
