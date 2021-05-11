@@ -29,7 +29,6 @@
 <script>
 import { mapActions } from "vuex";
 import { useToast } from "vue-toastification";
-// import { useSound } from "@vueuse/sound";
 
 export default {
   name: "InputOverstock",
@@ -70,10 +69,9 @@ export default {
 
   watch: {
     barcode: async function (value) {
-      // console.log(this.$store.getters.getBarcodes);
-      // this.$store.getters.getBarcodes.then((result) => console.log(result));
-
-      var item = await this.$store.getters.getItemByBarcode(value);
+      var item = await this.$store.getters.getItemByBarcode(
+        this.parseNumber(value)
+      );
 
       if (!item) return;
 

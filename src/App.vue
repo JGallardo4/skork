@@ -7,7 +7,7 @@ export default {
   name: "App",
 
   mounted() {
-    this.$store.dispatch("loadBarcodes");
+    this.$store.dispatch("initializeStore");
   },
 };
 </script>

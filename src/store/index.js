@@ -2,11 +2,15 @@ import { createStore } from "vuex";
 const { GoogleSpreadsheet } = require("google-spreadsheet");
 
 export default createStore({
-  state: { inventoryDoc: getInventoryDoc(), barcodes: [] },
+  state: { inventorySheet: "", boxAmountsSheet: "", barcodes: [] },
 
   mutations: {
     SET_INVENTORY_SHEET(state, inventorySheet) {
       state.inventorySheet = inventorySheet;
+    },
+
+    SET_BOX_AMOUNTS_SHEET(state, boxAmountsSheet) {
+      state.boxAmountsSheet = boxAmountsSheet;
     },
 
     ADD_BARCODE(state, barcode) {
@@ -15,43 +19,31 @@ export default createStore({
   },
 
   getters: {
-    getInventorySheet: async (state) => {
-      var doc = await state.inventoryDoc;
-
-      var sheet = doc.sheetsByTitle["Inventory"];
-
-      return sheet;
-    },
-
-    getBoxAmountsSheet: async (state) => {
-      var doc = await state.inventoryDoc;
-
-      var sheet = doc.sheetsByTitle["Box Amounts"];
-
-      return sheet;
-    },
-
-    getItemByBarcode: (state, getters) => async (barcode) => {
+    getItemByBarcode: (state) => async (barcode) => {
       if (barcode === "") return undefined;
 
-      var sheet = await getters.getInventorySheet;
-      var rows = await sheet.getRows();
+      var itemRow = Array.from(state.barcodes).find(
+        (item) => item.barcode === barcode
+      ).row;
 
-      return rows.find(
-        (item) => item.Barcode !== "" && item.Barcode === barcode
-      );
+      var rows = await state.inventorySheet.getRows({
+        offset: itemRow - 1,
+        limit: 1,
+      });
+
+      var item = rows[0];
+
+      return item;
     },
 
-    getBoxCapacity: (state, getters) => async (code) => {
-      var sheet = await getters.getBoxAmountsSheet;
-      var rows = Array.from(await sheet.getRows());
+    getBoxCapacity: (state) => async (code) => {
+      var rows = Array.from(await state.boxAmountsSheet.getRows());
 
       return rows.find((item) => item.Id === code).Amount;
     },
 
-    getItemsByRange: (state, getters) => async (options) => {
-      var sheet = await getters.getInventorySheet;
-      var rows = await sheet.getRows(options);
+    getItemsByRange: (state) => async (options) => {
+      var rows = await state.inventorySheet.getRows(options);
 
       return rows;
     },
@@ -62,33 +54,36 @@ export default createStore({
   },
 
   actions: {
-    async loadBarcodes({ getters, commit }) {
-      var sheet = await getters.getInventorySheet;
+    async initializeStore({ commit }) {
+      var doc = new GoogleSpreadsheet(
+        "1dp5vKTq9V5DfhpDsCq1XWpmuVDz7oiuTVy-rOO23I7w"
+      );
 
-      await sheet.loadCells("C:C");
+      await doc.useServiceAccountAuth({
+        client_email: process.env.VUE_APP_GOOGLE_SERVICE_ACCOUNT_EMAIL,
+        private_key: process.env.VUE_APP_GOOGLE_PRIVATE_KEY.replace(
+          /\\n/g,
+          "\n"
+        ),
+      });
 
-      for (var i = 2; i < sheet.cellStats.loaded - 1; i++) {
-        var cell = sheet.getCellByA1("C" + i);
+      await doc.loadInfo();
+
+      var inventorySheet = doc.sheetsByTitle["Inventory"];
+      commit("SET_INVENTORY_SHEET", inventorySheet);
+
+      var boxAmountsSheet = doc.sheetsByTitle["Box Amounts"];
+      commit("SET_BOX_AMOUNTS_SHEET", boxAmountsSheet);
+
+      await inventorySheet.loadCells("C:C");
+
+      for (var i = 2; i < inventorySheet.cellStats.loaded - 1; i++) {
+        var cell = inventorySheet.getCellByA1("C" + i);
 
         if (cell.value != undefined) {
-          commit("ADD_BARCODE", cell.value);
+          commit("ADD_BARCODE", { barcode: cell.value, row: cell._row });
         }
       }
     },
   },
 });
-
-async function getInventoryDoc() {
-  const doc = new GoogleSpreadsheet(
-    "1dp5vKTq9V5DfhpDsCq1XWpmuVDz7oiuTVy-rOO23I7w"
-  );
-
-  await doc.useServiceAccountAuth({
-    client_email: process.env.VUE_APP_GOOGLE_SERVICE_ACCOUNT_EMAIL,
-    private_key: process.env.VUE_APP_GOOGLE_PRIVATE_KEY.replace(/\\n/g, "\n"),
-  });
-
-  await doc.loadInfo();
-
-  return doc;
-}
