@@ -70,10 +70,12 @@ export default {
 
   watch: {
     barcode: async function (value) {
-      console.log(await this.$store.getters.getBarcodes);
+      // console.log(this.$store.getters.getBarcodes);
       // this.$store.getters.getBarcodes.then((result) => console.log(result));
 
       var item = await this.$store.getters.getItemByBarcode(value);
+
+      if (!item) return;
 
       var boxCapacity = await this.$store.getters.getBoxCapacity(
         item.BoxCapacity

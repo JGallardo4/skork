@@ -2,11 +2,15 @@ import { createStore } from "vuex";
 const { GoogleSpreadsheet } = require("google-spreadsheet");
 
 export default createStore({
-  state: { inventoryDoc: getInventoryDoc() },
+  state: { inventoryDoc: getInventoryDoc(), barcodes: [] },
 
   mutations: {
     SET_INVENTORY_SHEET(state, inventorySheet) {
       state.inventorySheet = inventorySheet;
+    },
+
+    ADD_BARCODE(state, barcode) {
+      state.barcodes.push(barcode);
     },
   },
 
@@ -52,14 +56,24 @@ export default createStore({
       return rows;
     },
 
-    getBarcodes: (getters) => async () => {
+    getBarcodes(state) {
+      return state.barcodes;
+    },
+  },
+
+  actions: {
+    async loadBarcodes({ getters, commit }) {
       var sheet = await getters.getInventorySheet;
 
       await sheet.loadCells("C:C");
 
-      var barcodes = await sheet.getRows();
+      for (var i = 2; i < sheet.cellStats.loaded - 1; i++) {
+        var cell = sheet.getCellByA1("C" + i);
 
-      return barcodes;
+        if (cell.value != undefined) {
+          commit("ADD_BARCODE", cell.value);
+        }
+      }
     },
   },
 });
