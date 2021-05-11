@@ -34,14 +34,14 @@
       </section>
 
       <inventory-item
-        v-if="selectedItem"
+        v-show="selectedItem"
         class="selected-item"
         :item="selectedItem"
       ></inventory-item>
 
       <form
         class="form pieces-form"
-        v-if="selectedItem"
+        v-show="selectedItem"
         v-on:submit.prevent="save()"
         autocomplete="off"
       >
@@ -91,6 +91,7 @@ export default {
   methods: {
     next() {
       this.barcode = "";
+      this.pieces = "";
       this.selectedItem = undefined;
 
       this.$nextTick(() => {
@@ -117,7 +118,9 @@ export default {
         this.selectedItem.Pieces = "";
 
         this.selectedItem.Total =
-          boxCapacity * this.parseNumber(this.selectedItem.Overstock);
+          this.selectedItem.Overstock === ""
+            ? ""
+            : boxCapacity * this.parseNumber(this.selectedItem.Overstock);
       } else {
         this.selectedItem.Pieces = this.parseNumber(this.pieces);
 
@@ -136,17 +139,15 @@ export default {
     barcode: async function (value) {
       if (value === "") return;
 
+      this.$nextTick(() => {
+        this.$refs.pieces.focus();
+      });
+
       var item = await this.$store.getters.getItemByBarcode(
         this.parseNumber(value)
       );
 
       this.selectedItem = item;
-
-      this.$nextTick(() => {
-        this.$refs.pieces.focus();
-      });
-
-      this.pieces = "";
     },
 
     selectedItem: function (value) {
