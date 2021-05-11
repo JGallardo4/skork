@@ -91,6 +91,8 @@ export default {
   methods: {
     next() {
       this.barcode = "";
+      this.selectedItem = undefined;
+
       this.$nextTick(() => {
         this.$refs.barcode.focus();
       });
@@ -132,11 +134,17 @@ export default {
 
   watch: {
     barcode: async function (value) {
-      this.$store.getters.getItemByBarcode(value).then((item) => {
-        this.selectedItem = item;
+      var item = await this.$store.getters.getItemByBarcode(
+        this.parseNumber(value)
+      );
+
+      this.selectedItem = item;
+
+      this.$nextTick(() => {
         this.$refs.pieces.focus();
-        this.pieces = "";
       });
+
+      this.pieces = "";
     },
 
     selectedItem: function (value) {
