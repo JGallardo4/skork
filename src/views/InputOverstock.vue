@@ -69,6 +69,8 @@ export default {
 
   watch: {
     barcode: async function (value) {
+      if (value === "") return;
+
       var item = await this.$store.getters.getItemByBarcode(
         this.parseNumber(value)
       );
