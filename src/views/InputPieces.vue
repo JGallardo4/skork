@@ -1,3 +1,7 @@
+// This view allows the user to update the item pieces.
+// First the item is found by scanning its barcode
+// Afterwards the user inputs the pieces amount and either presses [Enter]
+// or uses the Next button
 <template>
   <div class="page-container">
     <section class="header-buttons">

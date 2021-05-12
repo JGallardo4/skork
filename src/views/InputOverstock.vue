@@ -1,3 +1,4 @@
+// This view allows the user to count overstock boxes by scanning their barcodes. No other input is required
 <template>
   <div class="page-container">
     <section class="buttons">
@@ -68,6 +69,7 @@ export default {
   },
 
   watch: {
+    // If item is found by barcode, update the overstock by +1
     barcode: async function (value) {
       if (value === "") return;
 

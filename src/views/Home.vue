@@ -47,7 +47,6 @@ export default {
   height: 100vh;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
 
   .main-button {
     @include button();

@@ -19,6 +19,7 @@ export default createStore({
   },
 
   getters: {
+    // Find item in index and use the row # to get the row from the spreadsheet
     getItemByBarcode: (state) => async (barcode) => {
       if (barcode === "") return undefined;
 
@@ -36,12 +37,14 @@ export default createStore({
       return item;
     },
 
+    // Pull all rows from the box amounts sheet and find the corresponding number to the letter code
     getBoxCapacity: (state) => async (code) => {
       var rows = Array.from(await state.boxAmountsSheet.getRows());
 
       return rows.find((item) => item.Id === code).Amount;
     },
 
+    // Used by the list view that is currently not used
     getItemsByRange: (state) => async (options) => {
       var rows = await state.inventorySheet.getRows(options);
 
@@ -53,6 +56,7 @@ export default createStore({
     },
   },
 
+  // Set sheets and initialize the barcodes index
   actions: {
     async initializeStore({ commit }) {
       var doc = new GoogleSpreadsheet(
@@ -71,6 +75,8 @@ export default createStore({
 
       var inventorySheet = doc.sheetsByTitle["Inventory"];
       commit("SET_INVENTORY_SHEET", inventorySheet);
+
+      console.log(inventorySheet);
 
       var boxAmountsSheet = doc.sheetsByTitle["Box Amounts"];
       commit("SET_BOX_AMOUNTS_SHEET", boxAmountsSheet);

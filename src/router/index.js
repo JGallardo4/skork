@@ -24,6 +24,7 @@ const routes = [
     component: InputPieces,
   },
 
+  // This view is deactivated for performance reasons
   // {
   //   path: "/list",
   //   name: "List",
