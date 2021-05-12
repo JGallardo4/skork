@@ -111,7 +111,7 @@ export default {
 @use "../assets/css/_variables.scss" as *;
 
 .page-container {
-  height: 150vh;
+  height: 100vh;
   display: grid;
   grid-template-columns: 1fr;
   grid-template-rows: auto auto 1fr;

@@ -165,7 +165,7 @@ export default {
 @use "../assets/css/_mixins.scss" as *;
 
 .page-container {
-  height: 150vh;
+  height: 120vh;
   display: grid;
   grid-template-columns: 1fr;
   grid-template-rows: auto auto auto auto 1fr;
@@ -215,6 +215,7 @@ export default {
   .next-button {
     padding: 2rem;
     font-size: x-large;
+    border-radius: 5px 0 0 5px;
   }
 }
 
