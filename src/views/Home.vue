@@ -1,7 +1,5 @@
 <template>
   <main class="main">
-    <!-- <spinner class="spinner" v-if="isLoading"></spinner> -->
-
     <!-- <pages :elements="inventoryItems"></pages> -->
     <!-- <pages></pages> -->
 
@@ -22,7 +20,6 @@
 </template>
 
 <script>
-// import Spinner from "../components/Spinner.vue";
 // import Pages from "../components/Pages.vue";
 
 export default {
@@ -36,7 +33,6 @@ export default {
 
   components: {
     // Pages,
-    // Spinner,
   },
 
   computed: {},
@@ -49,22 +45,15 @@ export default {
 
 .main-buttons {
   height: 100vh;
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-template-rows: 1fr 1fr 1fr;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
 
   .main-button {
     @include button();
     font-size: xx-large;
     margin: 0.5rem;
-  }
-
-  .overstock {
-    grid-row: 2;
-  }
-
-  .pieces {
-    grid-row: 3;
+    padding: 3rem 0 3rem 0;
   }
 }
 </style>
