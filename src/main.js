@@ -6,6 +6,8 @@ import "./assets/css/main.scss";
 import Toast from "vue-toastification";
 import "./registerServiceWorker";
 import "vue-toastification/dist/index.css";
+import VueLoading from "vue-loading-overlay";
+import "vue-loading-overlay/dist/vue-loading.css";
 
 createApp(App)
   .use(store)
@@ -14,4 +16,5 @@ createApp(App)
     position: "bottom-right",
     timeout: false,
   })
+  .use(VueLoading)
   .mount("#app");

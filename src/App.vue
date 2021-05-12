@@ -7,7 +7,11 @@ export default {
   name: "App",
 
   mounted() {
-    this.$store.dispatch("initializeStore");
+    var loader = this.$loading.show();
+
+    this.$store.dispatch("initializeStore").then(() => {
+      loader.hide();
+    });
   },
 };
 </script>
