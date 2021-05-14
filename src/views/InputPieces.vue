@@ -9,7 +9,7 @@ and either presses [Enter] // or uses the Next button
       </router-link>
     </section>
 
-    <form class="barcode-form form" autocomplete="off">
+    <form class="barcode-form form" autocomplete="off" @submit.prevent="">
       <div class="form-field">
         <label for="barcode" class="field-label">
           <i class="fas fa-barcode icon"></i>

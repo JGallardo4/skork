@@ -8,7 +8,7 @@ barcodes. No other input is required
       </router-link>
     </section>
 
-    <form class="form overstock-form" autocomplete="off">
+    <form class="form overstock-form" autocomplete="off" @submit.prevent="">
       <div class="form-field">
         <label for="overstock" class="field-label">
           <i class="fas fa-box icon"></i>
