@@ -76,8 +76,6 @@ export default createStore({
       var inventorySheet = doc.sheetsByTitle["Inventory"];
       commit("SET_INVENTORY_SHEET", inventorySheet);
 
-      console.log(inventorySheet);
-
       var boxAmountsSheet = doc.sheetsByTitle["Box Amounts"];
       commit("SET_BOX_AMOUNTS_SHEET", boxAmountsSheet);
 

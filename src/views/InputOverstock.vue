@@ -1,4 +1,5 @@
-// This view allows the user to count overstock boxes by scanning their barcodes. No other input is required
+// This view allows the user to count overstock boxes by scanning their
+barcodes. No other input is required
 <template>
   <div class="page-container">
     <section class="buttons">
@@ -29,6 +30,7 @@
 
 <script>
 import { mapActions } from "vuex";
+import ToastComponent from "../components/ToastComponent";
 import { useToast } from "vue-toastification";
 
 export default {
@@ -36,10 +38,9 @@ export default {
 
   setup() {
     const toast = useToast();
-
     const beep = new Audio(require("../assets/sounds/beep.mp3"));
 
-    return { toast, beep };
+    return { beep, toast };
   },
 
   data: function () {
@@ -65,6 +66,23 @@ export default {
       }
 
       return parsed;
+    },
+
+    // Reset overstock to ""
+    async reset(barcode) {
+      var item = await this.$store.getters.getItemByBarcode(
+        this.parseNumber(barcode)
+      );
+
+      if (!item) return;
+
+      item.Overstock = "";
+
+      var total = item.Pieces === "" ? "" : this.parseNumber(item.Pieces);
+
+      item.Total = total;
+
+      item.save();
     },
   },
 
@@ -94,9 +112,23 @@ export default {
       item.save();
 
       this.toast.clear();
-      this.toast.info(
-        item.Brand + " " + item.Name + "\nOverstock: " + item.Overstock
-      );
+
+      var toastContent = {
+        component: ToastComponent,
+
+        props: {
+          content:
+            item.Brand + " " + item.Name + "\nOverstock: " + item.Overstock,
+
+          barcode: this.parseNumber(this.barcode),
+        },
+
+        listeners: {
+          reset: this.reset,
+        },
+      };
+
+      this.toast(toastContent);
 
       this.barcode = "";
 

@@ -1,4 +1,3 @@
-
 <template>
   <section class="list-container">
     <section class="buttons">
