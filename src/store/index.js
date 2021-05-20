@@ -79,10 +79,22 @@ export default createStore({
       var boxAmountsSheet = doc.sheetsByTitle["Box Amounts"];
       commit("SET_BOX_AMOUNTS_SHEET", boxAmountsSheet);
 
-      await inventorySheet.loadCells("C:C");
+      await inventorySheet.loadHeaderRow();
+
+      var barcodeColumnNumber = inventorySheet.headerValues.findIndex(
+        (v) => v === "Barcode"
+      );
+
+      var barcodeColumnLetter = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".charAt(
+        barcodeColumnNumber
+      );
+
+      await inventorySheet.loadCells(
+        barcodeColumnLetter + ":" + barcodeColumnLetter
+      );
 
       for (var i = 2; i < inventorySheet.cellStats.loaded - 1; i++) {
-        var cell = inventorySheet.getCellByA1("C" + i);
+        var cell = inventorySheet.getCellByA1(barcodeColumnLetter + i);
 
         if (cell.value != undefined) {
           commit("ADD_BARCODE", { barcode: cell.value, row: cell._row });
