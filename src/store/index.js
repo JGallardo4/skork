@@ -93,7 +93,7 @@ export default createStore({
         barcodeColumnLetter + ":" + barcodeColumnLetter
       );
 
-      for (var i = 2; i < inventorySheet.cellStats.loaded - 1; i++) {
+      for (var i = 2; i <= inventorySheet.cellStats.loaded; i++) {
         var cell = inventorySheet.getCellByA1(barcodeColumnLetter + i);
 
         if (cell.value != undefined) {
