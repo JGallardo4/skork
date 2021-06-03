@@ -113,24 +113,27 @@ export default {
     },
 
     async save() {
-      var boxCapacity = this.parseNumber(
-        await this.$store.getters.getBoxCapacity(this.selectedItem.BoxCapacity)
-      );
+      // var boxCapacity = this.parseNumber(
+      //   await this.$store.getters.getBoxCapacity(this.selectedItem.BoxCapacity)
+      // );
 
       if (this.pieces === "") {
         this.selectedItem.Pieces = "";
 
-        this.selectedItem.Total =
-          this.selectedItem.Overstock === ""
-            ? ""
-            : boxCapacity * this.parseNumber(this.selectedItem.Overstock);
+        // this.selectedItem.Total =
+        //   this.selectedItem.Overstock === ""
+        //     ? ""
+        //     : boxCapacity * this.parseNumber(this.selectedItem.Overstock);
       } else {
         this.selectedItem.Pieces = this.parseNumber(this.pieces);
 
-        this.selectedItem.Total =
-          boxCapacity * this.parseNumber(this.selectedItem.Overstock) +
-          this.selectedItem.Pieces;
+        // this.selectedItem.Total =
+        //   boxCapacity * this.parseNumber(this.selectedItem.Overstock) +
+        //   this.selectedItem.Pieces;
       }
+
+      this.selectedItem.Total =
+        '=INDIRECT("H"&ROW())*VLOOKUP(G2, box_amounts_key, 3, false)+INDIRECT("I"&ROW())';
 
       await this.selectedItem.save();
 

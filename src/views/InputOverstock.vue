@@ -78,9 +78,12 @@ export default {
 
       item.Overstock = "";
 
-      var total = item.Pieces === "" ? "" : this.parseNumber(item.Pieces);
+      // var total = item.Pieces === "" ? "" : this.parseNumber(item.Pieces);
 
-      item.Total = total;
+      // item.Total = total;
+
+      item.Total =
+        '=INDIRECT("H"&ROW())*VLOOKUP(G2, box_amounts_key, 3, false)+INDIRECT("I"&ROW())';
 
       item.save();
     },
@@ -97,18 +100,22 @@ export default {
 
       if (!item) return;
 
-      var boxCapacity = await this.$store.getters.getBoxCapacity(
-        item.BoxCapacity
-      );
+      // var boxCapacity = await this.$store.getters.getBoxCapacity(
+      //   item.BoxCapacity
+      // );
 
       if (item.Overstock === undefined) item.Overstock = 0;
       item.Overstock++;
 
-      var total =
-        this.parseNumber(boxCapacity) * this.parseNumber(item.Overstock) +
-        this.parseNumber(item.Pieces);
+      // var total =
+      //   this.parseNumber(boxCapacity) * this.parseNumber(item.Overstock) +
+      //   this.parseNumber(item.Pieces);
 
-      item.Total = total;
+      // item.Total = total;
+
+      item.Total =
+        '=INDIRECT("H"&ROW())*VLOOKUP(G2, box_amounts_key, 3, false)+INDIRECT("I"&ROW())';
+
       item.save();
 
       this.toast.clear();
