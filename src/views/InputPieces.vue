@@ -133,7 +133,7 @@ export default {
       }
 
       this.selectedItem.Total =
-        '=INDIRECT("H"&ROW())*VLOOKUP(G2, box_amounts_key, 3, false)+INDIRECT("I"&ROW())';
+        '=INDIRECT("H"&ROW())*VLOOKUP(INDIRECT("G"&ROW()), box_amounts_key, 3, false)+INDIRECT("I"&ROW())';
 
       await this.selectedItem.save();
 
